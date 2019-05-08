@@ -29,10 +29,9 @@ public class TestingGuy extends Actor {
         gah++;
 
         Bitmap Q = Resourcer.allBitmaps.get("apple").bitmap;
-        // Artist.drawBitmap("gggg", gah/10, 800, 400, 1f, 1f, 0);
-        Artist.drawBitmap("apple", gah, 800, 400, 2f + gah/100.0f, 2f, gah);
+        Artist.drawBitmap("gggg", gah/10, 800, 400, 1f/3, 1f/3, 0);
+        // Artist.drawBitmap("apple", gah, 800, 400, 2f + gah/100.0f, 2f, gah);
         // Artist.drawBitmap("apple", x - Q.getWidth()/2, y - Q.getHeight()/2, 2f, 2f, 10f);
-
     }
 
 

@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 
@@ -30,10 +31,11 @@ public class Artist {
 
     public static Point displaySize = new Point();
     public static Display d = null;
+    public static DisplayMetrics dm = null;
 
-
-    public static void Initialize(Display display) {
+    public static void Initialize(Display display, DisplayMetrics displaymetrics) {
         d = display;
+        dm = displaymetrics;
         //
         d.getSize(displaySize);
         //
@@ -143,32 +145,34 @@ public class Artist {
         c.save();
         //
         //
-        /*
-        c.translate(x, y);
+        c.translate(x, y); // *** Translate
 
         c.translate(-image.offsetX *sclx, -image.offsetY *scly); // Orientation...?
         //
         c.rotate(rot, image.offsetX *sclx, image.offsetY *scly);
         //
         c.scale(sclx, scly);
-        */
-
         //
         //
-        float mn = 2.625f; // ??? <-- What the hell does this number mean...? Where did it come from? Are the aliens trying to communicate with us?
+        float mn = dm.density; // *** The display density... Don't ask me.
         int tx, ty;
         tx = (int) (image.frameWidth*mn * (currentFrame % image.frameAcross));
         ty = (int) (image.frameHeight*mn * (Math.floor(currentFrame / image.frameAcross)));
+
+        /*
         Log.d("Artist", "Frame data...");
-        Log.d("Artist", ""+image.bitmap);
-        Log.d("Artist", ""+ratioWidth);
-        Log.d("Artist", ""+ratioHeight);
+        Log.d("Artist", ""+image.frameWidth);
+        Log.d("Artist", ""+image.frameHeight);
+        */
+
+
+
+
         c.drawBitmap(image.bitmap,
+                // new Rect(0 + tx,0 + ty, 0 + (int)(image.frameWidth*mn) + tx, 0 + (int)(image.frameHeight*mn) + ty)
                 new Rect(0 + tx,0 + ty, 0 + (int)(image.frameWidth*mn) + tx, 0 + (int)(image.frameHeight*mn) + ty),
-                new Rect(0, 0, image.frameWidth*5, image.frameHeight*5),
+                new Rect(0, 0, (int)(image.frameWidth*mn), (int)(image.frameHeight*mn)),
                 p);
-        // c.drawBitmap(image.bitmap, 0, 0, p);
-        // c.drawBitmap(image.bitmap, m, p);
         //
         //
         c.restore();
