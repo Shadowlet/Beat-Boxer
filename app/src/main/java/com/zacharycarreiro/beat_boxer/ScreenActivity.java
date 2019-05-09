@@ -61,9 +61,9 @@ public class ScreenActivity extends Activity {
             ourHolder = getHolder();
             paint = new Paint();
             //
-            Resourcer.Setup(getResources());
-            //
             Artist.Initialize(getWindowManager().getDefaultDisplay(), getResources().getDisplayMetrics());
+            //
+            Resourcer.Setup(getResources());
 
 
             Artist.SetScreenSize(1800, 1080);
@@ -88,13 +88,17 @@ public class ScreenActivity extends Activity {
 
         public void Initialize() {
 
-            new TestingGuy();
+            new TestingGuy("gggg");
 
         }
         public void Update() {
             for (Actor a : Actor.actorList) {
+                a.Process();
+                //
                 a.Update();
             }
+            //
+            Inputter.Clear();
         }
 
         private void _Draw() {
@@ -114,9 +118,11 @@ public class ScreenActivity extends Activity {
         public void Draw() {
             canvas.drawColor(Color.argb(255, 255, 0, 255));//the background
             //
-            paint.setColor(Color.BLACK);
+            paint.setColor(Color.MAGENTA); // Color.BLACK
             Artist.drawRect(0, 0,
                     Artist.screenWidth, Artist.screenHeight);
+            //
+            Artist.drawBitmap("grid2", 0, 0, 0, 1f, 1f, 0);
             //
             for (Actor a : Actor.actorList) {
                 a.Draw(canvas, paint);
@@ -126,7 +132,7 @@ public class ScreenActivity extends Activity {
 
             paint.setColor(Color.argb(255, 255, 0, 0));
             paint.setTextSize(45);
-            canvas.drawText("xR:" + "???" + " yR:" + "???" + " fps:" + fps, 20, 40, paint);
+            canvas.drawText(Helper.debugMessage + "\nfps:" + fps, 20, 40, paint);
         }
 
 
@@ -171,8 +177,8 @@ public class ScreenActivity extends Activity {
 
 
         @Override
-        public boolean onTouchEvent(MotionEvent motionEvent) {
-            return true;
+        public boolean onTouchEvent(MotionEvent event) {
+            return Inputter.Read(event);
         }
 
 

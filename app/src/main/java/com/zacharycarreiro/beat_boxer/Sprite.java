@@ -34,8 +34,8 @@ public class Sprite {
     }
 
 
-    public int GetWidth() { return bitmap.getWidth(); }
-    public int GetHeight() { return bitmap.getHeight(); }
+    public int GetWidth() { return (int)(bitmap.getWidth() / Artist.dm.density); }
+    public int GetHeight() { return (int)(bitmap.getHeight() /Artist.dm.density); }
 
 
 
@@ -46,7 +46,7 @@ public class Sprite {
     }
     // *** Sets origin to middle
     public void Centralize() {
-        offsetX = GetWidth()/2;
-        offsetY = GetHeight()/2;
+        offsetX = frameWidth/2;
+        offsetY = frameHeight/2;
     }
 }

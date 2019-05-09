@@ -18,6 +18,8 @@ public class Resourcer {
         toLoad.put("apple", R.drawable.apple);
         toLoad.put("gggg", R.drawable.gggg);
         toLoad.put("ggggg", R.drawable.ggggg);
+        toLoad.put("grid", R.drawable.grid);
+        toLoad.put("grid2", R.drawable.grid2);
     }
 
     public static void Setup(Resources r) {
@@ -60,22 +62,28 @@ public class Resourcer {
         Sprite Q;
         //
         Q = allBitmaps.get("apple");
-        Q.Centralize();
+        Q.Cornerize();
 
 
         Q = allBitmaps.get("gggg");
-        Q.Cornerize();
         Q.frameCount = 7;
         Q.frameAcross = 3;
         Q.frameWidth = 192;
         Q.frameHeight = 192;
+        Q.Centralize();
 
         Q = allBitmaps.get("ggggg");
-        Q.Centralize();
         Q.frameCount = 7;
         Q.frameAcross = 7;
         Q.frameWidth = 64;
         Q.frameHeight = 64;
+        Q.Centralize();
+
+
+        Q = allBitmaps.get("grid");
+        Q.Cornerize();
+        Q = allBitmaps.get("grid2");
+        Q.Cornerize();
     }
 }
 

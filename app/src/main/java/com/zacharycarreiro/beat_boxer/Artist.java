@@ -108,7 +108,7 @@ public class Artist {
         c.drawRect(offsetX+ x1 /ratioWidth, offsetY+ y1 /ratioHeight, offsetX+ x2 /ratioWidth, offsetY+ y2 /ratioHeight, p);
     }
 
-
+    /*
     public static void drawBitmap(Bitmap bitmap, int ix1, int iy1, int ix2, int iy2, Rect screenRect) {
         drawBitmap(bitmap, new Rect(ix1, iy1, ix2, iy2), screenRect);
     }
@@ -121,6 +121,7 @@ public class Artist {
     public static void drawBitmap(Bitmap bitmap, Rect imageRect, Rect screenRect) {
         c.drawBitmap(bitmap, imageRect, screenRect, p);
     }
+    */
     public static void drawBitmap(String bitmap, float currentFrame, float x, float y, float sclx, float scly, float rot) {
         drawBitmap(Resourcer.allBitmaps.get(bitmap), currentFrame, x, y, sclx, scly, rot);
     }
@@ -141,20 +142,21 @@ public class Artist {
         */
 
 
+        float mn = dm.density; // *** The display density... Don't ask me.
 
         c.save();
         //
         //
         c.translate(x, y); // *** Translate
-
+        //
         c.translate(-image.offsetX *sclx, -image.offsetY *scly); // Orientation...?
         //
         c.rotate(rot, image.offsetX *sclx, image.offsetY *scly);
         //
+        //
         c.scale(sclx, scly);
         //
         //
-        float mn = dm.density; // *** The display density... Don't ask me.
         int tx, ty;
         tx = (int) (image.frameWidth*mn * (currentFrame % image.frameAcross));
         ty = (int) (image.frameHeight*mn * (Math.floor(currentFrame / image.frameAcross)));
@@ -169,9 +171,8 @@ public class Artist {
 
 
         c.drawBitmap(image.bitmap,
-                // new Rect(0 + tx,0 + ty, 0 + (int)(image.frameWidth*mn) + tx, 0 + (int)(image.frameHeight*mn) + ty)
-                new Rect(0 + tx,0 + ty, 0 + (int)(image.frameWidth*mn) + tx, 0 + (int)(image.frameHeight*mn) + ty),
-                new Rect(0, 0, (int)(image.frameWidth*mn), (int)(image.frameHeight*mn)),
+                new Rect(0 + tx,0 + ty, 0 + tx + (int)(image.frameWidth*mn), 0 + ty + (int)(image.frameHeight*mn)),
+                new Rect(0, 0, (int)(image.frameWidth), (int)(image.frameHeight)),
                 p);
         //
         //
