@@ -171,7 +171,7 @@ public class Artist {
         c.drawBitmap(image.bitmap,
                 // new Rect(0 + tx,0 + ty, 0 + (int)(image.frameWidth*mn) + tx, 0 + (int)(image.frameHeight*mn) + ty)
                 new Rect(0 + tx,0 + ty, 0 + (int)(image.frameWidth*mn) + tx, 0 + (int)(image.frameHeight*mn) + ty),
-                new Rect(0, 0, (int)(image.frameWidth*mn), (int)(image.frameHeight*mn)),
+                new Rect(0, 0, (int)(image.frameWidth), (int)(image.frameHeight)),
                 p);
         //
         //

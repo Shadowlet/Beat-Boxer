@@ -88,7 +88,13 @@ public class ScreenActivity extends Activity {
 
         public void Initialize() {
 
-            new TestingGuy();
+            //new TestingGuy();
+            new GameScreen();
+            new PunchingGuy();
+            new PunchingBag();
+            new ComboCounter();
+            new GameTimer();
+            new Meter();
 
         }
         public void Update() {

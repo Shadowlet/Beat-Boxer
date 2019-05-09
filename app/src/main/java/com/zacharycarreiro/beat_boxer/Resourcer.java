@@ -18,6 +18,11 @@ public class Resourcer {
         toLoad.put("apple", R.drawable.apple);
         toLoad.put("gggg", R.drawable.gggg);
         toLoad.put("ggggg", R.drawable.ggggg);
+        toLoad.put("punchingGuy", R.drawable.punchingguy);
+        toLoad.put("punchingBag", R.drawable.punchingbag);
+        toLoad.put("arrow", R.drawable.arrow);
+        toLoad.put("meter", R.drawable.meter);
+
     }
 
     public static void Setup(Resources r) {
@@ -76,6 +81,12 @@ public class Resourcer {
         Q.frameAcross = 7;
         Q.frameWidth = 64;
         Q.frameHeight = 64;
+
+        Q = allBitmaps.get("punchingBag");
+        Q.offsetX = Q.GetWidth()/2;
+        Q.offsetY = 0;
+
+        Q = allBitmaps.get("")
     }
 }
 
