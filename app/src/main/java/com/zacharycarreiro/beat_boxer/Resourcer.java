@@ -3,6 +3,7 @@ package com.zacharycarreiro.beat_boxer;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Debug;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,6 +64,8 @@ public class Resourcer {
     // *** Sets up the details for any loaded sprites
     public static void Postload() {
         Sprite Q;
+        Sprite R;
+        Sprite S;
         //
         Q = allBitmaps.get("apple");
         Q.Centralize();
@@ -86,7 +89,15 @@ public class Resourcer {
         Q.offsetX = Q.GetWidth()/2;
         Q.offsetY = 0;
 
-        Q = allBitmaps.get("")
+
+
+        S = allBitmaps.get("meter");
+
+        R = allBitmaps.get("arrow");
+        R.offsetX = S.GetWidth();
+
+
+
     }
 }
 

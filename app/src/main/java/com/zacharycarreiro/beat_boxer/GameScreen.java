@@ -6,6 +6,8 @@ import android.graphics.Paint;
 
 public class GameScreen extends Actor {
 
+
+
     @Override
     public void Update()
     {
@@ -18,7 +20,7 @@ public class GameScreen extends Actor {
 
 
         p.setColor(Color.argb(255,255,255,255));
-        Artist.drawRect(0, 0, Artist.screenWidth, Artist.screenHeight);
+        Artist.drawRect(0, Artist.screenHeight/6, Artist.screenWidth, Artist.screenHeight);
 
 
     }

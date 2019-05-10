@@ -36,6 +36,6 @@ public class PunchingBag extends Actor{
         super.onCreate();
 
         x = Artist.screenWidth *0.85f;
-        y = 200;
+        y = Artist.screenHeight /6;
     }
 }
