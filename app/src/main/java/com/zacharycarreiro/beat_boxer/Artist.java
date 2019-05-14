@@ -167,9 +167,6 @@ public class Artist {
         Log.d("Artist", ""+image.frameHeight);
         */
 
-
-
-
         c.drawBitmap(image.bitmap,
                 new Rect(0 + tx,0 + ty, 0 + tx + (int)(image.frameWidth*mn), 0 + ty + (int)(image.frameHeight*mn)),
                 new Rect(0, 0, (int)(image.frameWidth), (int)(image.frameHeight)),

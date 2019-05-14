@@ -29,7 +29,7 @@ public class Inputter {
     public static boolean check(int motionEvent, Rect area) {
        for (SingleInput Q : allInputs) {
            if (Q.action == motionEvent) {
-               if (area.contains((int)Q.x, (int)Q.y)) {
+               if (area == null || area.contains((int)Q.x, (int)Q.y)) {
                    return true;
                }
            }

@@ -3,6 +3,7 @@ package com.zacharycarreiro.beat_boxer;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,11 +21,21 @@ public class Resourcer {
         toLoad.put("ggggg", R.drawable.ggggg);
         toLoad.put("grid", R.drawable.grid);
         toLoad.put("grid2", R.drawable.grid2);
+
+        toLoad.put("punchingGuy", R.drawable.punchingguy);
+        toLoad.put("punchingBag", R.drawable.punchingbag);
+        toLoad.put("meter", R.drawable.meter);
+        toLoad.put("arrow", R.drawable.arrow);
+
+
     }
 
     public static void Setup(Resources r) {
         Preload();
 
+        Bitmap mBitmapMeter = BitmapFactory.decodeResource(r,R.drawable.meter);
+        Log.d("WIDTH", String.valueOf(mBitmapMeter.getWidth()));
+        Log.d("HEIGHT", String.valueOf(mBitmapMeter.getHeight()));
 
         allBitmaps.clear();
         //
@@ -84,6 +95,19 @@ public class Resourcer {
         Q.Cornerize();
         Q = allBitmaps.get("grid2");
         Q.Cornerize();
+
+        Q = allBitmaps.get("meter");
+        Q.Centralize();
+        Q = allBitmaps.get("arrow");
+        Q.Centralize();
+
+        Q = allBitmaps.get("punchingBag");
+        Q.Centralize();
+        Q.offsetY = 0;
+
+        Q = allBitmaps.get("punchingGuy");
+        Q.Centralize();
+        Q.offsetY = Q.GetHeight();
     }
 }
 

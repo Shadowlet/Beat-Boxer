@@ -10,6 +10,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -88,7 +89,17 @@ public class ScreenActivity extends Activity {
 
         public void Initialize() {
 
-            new TestingGuy("gggg");
+            // new TestingGuy("gggg");
+            Meter m = new Meter();
+            m.myArrow = new Arrow();
+
+
+            PunchingGuy g = new PunchingGuy();
+            PunchingBag p = new PunchingBag();
+            p.myGuy = g;
+            p.myMeter = m;
+
+
 
         }
         public void Update() {
@@ -116,17 +127,38 @@ public class ScreenActivity extends Activity {
 
         }
         public void Draw() {
-            canvas.drawColor(Color.argb(255, 255, 0, 255));//the background
+            canvas.drawColor(Color.argb(255, 0, 0, 0));//the background
             //
-            paint.setColor(Color.MAGENTA); // Color.BLACK
-            Artist.drawRect(0, 0,
-                    Artist.screenWidth, Artist.screenHeight);
             //
             Artist.drawBitmap("grid2", 0, 0, 0, 1f, 1f, 0);
+            //
+            //
+            paint.setColor(Color.argb(255,180,180,180));
+            Artist.drawRect(0, 0, Artist.screenWidth, Artist.screenHeight/3);
+            Artist.drawRect(0, Artist.screenHeight - Artist.screenHeight/3, Artist.screenWidth, Artist.screenHeight);
+            //
+            paint.setColor(Color.argb(255,0,0,0));
+            Artist.drawRect(0, 0, Artist.screenWidth, Artist.screenHeight/7);
+            Artist.drawRect(0, Artist.screenHeight - Artist.screenHeight/7, Artist.screenWidth, Artist.screenHeight);
             //
             for (Actor a : Actor.actorList) {
                 a.Draw(canvas, paint);
             }
+
+
+
+
+
+
+
+
+
+            paint.setColor(Color.argb(255,0,255,255));
+            //Artist.drawRect(Artist.screenWidth * 0.5f, Artist.screenHeight * 0.8f, Artist.screenWidth * 0.5f +10, Artist.screenHeight * 0.8f +10);
+
+
+
+
 
 
 

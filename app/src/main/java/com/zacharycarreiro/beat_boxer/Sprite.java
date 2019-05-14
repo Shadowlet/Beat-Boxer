@@ -23,11 +23,11 @@ public class Sprite {
     public Sprite(Bitmap bm) {
         bitmap = bm;
         //
-        frameWidth = bm.getWidth();
-        frameHeight = bm.getHeight();
+        frameWidth = GetWidth();
+        frameHeight = GetHeight();
 
-        preferredWidth = bm.getWidth();
-        preferredHeight = bm.getHeight();
+        preferredWidth = GetWidth();
+        preferredHeight = GetHeight();
 
 
         Cornerize();
