@@ -3,6 +3,7 @@ package com.zacharycarreiro.beat_boxer;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 
 public class Meter extends DisplayableActor{
@@ -14,7 +15,12 @@ public class Meter extends DisplayableActor{
 
     int gah;
 
+
+    Rect punchTouchArea = new Rect(Artist.screenWidth/2, 0, Artist.screenWidth, Artist.screenHeight);
+    Rect duckTouchArea = new Rect(0, 0, Artist.screenWidth/2, Artist.screenHeight);
+
     float meterValue;
+    float swingValue = 10f;
     float leeway = 0.7f; // 0.2f;
     float evenBetter = 0.1f;
     float sweetspot = 0;
@@ -31,8 +37,13 @@ public class Meter extends DisplayableActor{
 
         updateMeter();
 
-        if (Inputter.check(MotionEvent.ACTION_DOWN, null)){
+        if (Inputter.check(MotionEvent.ACTION_DOWN, punchTouchArea)){
             punchBag();
+            Log.d("STATE", "Punching");
+        }
+        else if(Inputter.check(MotionEvent.ACTION_DOWN, duckTouchArea)){
+            Duck();
+            Log.d("STATE", "Ducking");
         }
         //Helper.DebugMessage("" + meterValue);
         gah++;
@@ -51,7 +62,7 @@ public class Meter extends DisplayableActor{
 
 
 
-        meterValue = (float)Math.sin(gah /10f);
+        meterValue = (float)Math.sin(gah /swingValue);
 
 
         myArrow.x = Artist.screenWidth * 0.2f   + meterValue* (sprite.GetWidth()/2);
@@ -66,20 +77,28 @@ public class Meter extends DisplayableActor{
         if (difference <= leeway) {
             if (difference <= evenBetter) {
                 Helper.DebugMessage("Hit");
+                //swingValue +=
             }
             else if (meterValue <= sweetspot)
             {
                 Helper.DebugMessage("Too Slow");
+
             }
             else if (meterValue >= sweetspot) {
                 Helper.DebugMessage("Too fast");
+
             }
         }
         else {
             Helper.DebugMessage("Miss");
+            // You die a most embarrassing death
         }
 
         //Helper.DebugMessage("Too Slow");
+
+    }
+
+    private void Duck(){
 
     }
 }
