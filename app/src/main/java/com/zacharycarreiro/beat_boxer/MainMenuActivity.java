@@ -1,14 +1,15 @@
 package com.zacharycarreiro.beat_boxer;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class MainMenuActivity extends AppCompatActivity {
+public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener {
 
-
-
+    Intent iPlay;
+    Intent iControls;
 
 
     @Override
@@ -23,6 +24,28 @@ public class MainMenuActivity extends AppCompatActivity {
         buttonPlay.setOnClickListener(this);
         buttonControls.setOnClickListener(this);
         buttonQuit.setOnClickListener(this);
+
+
+        iPlay = new Intent(this, ScreenActivity.class);
+        iControls = new Intent(this, ControlsActivity.class);
+
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+
+            case R.id.buttonPlay:
+                startActivity(iPlay);
+                break;
+            case R.id.buttonControls:
+                startActivity(iControls);
+                break;
+            case R.id.buttonQuit:
+                finish();
+                System.exit(0);
+                break;
+
+        }
+    }
 }

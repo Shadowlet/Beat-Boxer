@@ -77,16 +77,16 @@ public class Meter extends DisplayableActor{
         if (difference <= leeway) {
             if (difference <= evenBetter) {
                 Helper.DebugMessage("Hit");
-                //swingValue +=
+                swingValue += 5f;
             }
             else if (meterValue <= sweetspot)
             {
                 Helper.DebugMessage("Too Slow");
-
+                swingValue -= 5f;
             }
             else if (meterValue >= sweetspot) {
                 Helper.DebugMessage("Too fast");
-
+                swingValue += 5f;
             }
         }
         else {
