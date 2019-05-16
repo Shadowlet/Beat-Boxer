@@ -35,13 +35,13 @@ public class GameTimeline extends Entity {
         // *** The test song
         Q.Add(false, false, false, false); // *** Bar 1
         Q.Add(true, true, true, true); // *** Bar 2
-        Q.Add(true, true, true, true); // *** Bar 3
+        Q.Add(true, false, true, false); // *** Bar 3
         Q.Add(true, true, true, true); // *** ...
+        Q.Add(true, false, false, false);
         Q.Add(true, true, true, true);
         Q.Add(true, true, true, true);
-        Q.Add(true, true, true, true);
-        Q.Add(true, true, true, true);
-        Q.Add(true, true, true, true);
+        Q.Add(false, false, false, false);
+        Q.Add(false, false, false, false);
         Q.Add(true, true, true, true);
         Q.Add(true, true, true, true);
         Q.Add(true, true, true, true);
@@ -160,33 +160,38 @@ public class GameTimeline extends Entity {
             //
             float tempMoment = -1;
 
-            float subCursor = (currentCursor - (float)Math.floor(currentCursor));
-
-            // for (int n = (int)Math.floor(currentCursor); n < currentSong.timeBars.size()-1; n++) {
+            float cursorBar = (float)Math.floor(currentCursor);
+            //
+            float cursorBeat = (float)Math.floor((currentCursor - cursorBar) *BEATCOUNT);
+            Log.e("BEAT", "Current Beat: "+cursorBeat);
             for (int n = 0; n < currentSong.timeBars.size()-1; n++) {
                 if (n < Math.floor(currentCursor)) continue;
+                Log.e("BEAT", "Current Bar: "+n);
 
 
 
+                TimeBar tb = currentSong.timeBars.get(n);
+                for (int m = 0; m<tb.hasBeat.length; m++) {
+                    if (n > cursorBar) {}
+                    else {
+                        if (m <= cursorBeat) {
+                            continue;
+                        }
+                    }
 
-                Log.e("CURSOR", ""+n);
-                Log.e("CURSOR", ""+subCursor);
+                    float newCursor = n+(m/((float)BEATCOUNT));
 
-                ??? <-- FIX THIS LATER... DO NOT COMMENT. ERROR ON PURPOSE.
-                for (float m = 0; m < 1.00f; m+=1f/BEATCOUNT) {
-                    if (m < (Math.ceil(subCursor*4)/4)) continue;
-
-                    if (currentSong.GetBeat(n+m)) {
-                        tempMoment = n+m;
+                    if (currentSong.GetBeat(newCursor)) {
+                        tempMoment = newCursor;
                         break;
                     }
                 }
                 //
-                if (tempMoment >= 0) break;
+                if (tempMoment >= 0) { break; }
             }
             //
             beatMoment = tempMoment;
-
+            //
             if (beatMoment < 0) {
                 Log.e("BEAT", "... Song has ended");
             }
