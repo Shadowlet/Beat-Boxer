@@ -28,6 +28,9 @@ public class TestingActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_testing);
 
 
+        //
+        Artist.Initialize(getWindowManager().getDefaultDisplay(), getResources().getDisplayMetrics());
+        //
         Resourcer.Setup(getResources());
 
 
@@ -35,10 +38,6 @@ public class TestingActivity extends Activity implements View.OnClickListener {
         button = findViewById(R.id.button);
         //
         button.setOnClickListener(this);
-
-
-
-
     }
 
 
@@ -59,9 +58,25 @@ public class TestingActivity extends Activity implements View.OnClickListener {
                     mThread.start();
                 }
                 else {
+
+                    if (mThread.at.getPlayState() == AudioTrack.PLAYSTATE_PLAYING) {
+                        mThread.at.pause();
+                        // mThread.at.setPlaybackHeadPosition(1800000);
+                    }
+                    else {
+                        mThread.at.setPlaybackRate(mThread.song.CalculateSampleRate() *10);
+                        //
+                        mThread.at.play();
+                    }
+
                     // mThread.at.setPlaybackRate(88200);
                     Toast.makeText(this, "111111111", Toast.LENGTH_LONG).show();
                 }
+                break;
+
+
+            case R.id.button2:
+
                 break;
         }
 

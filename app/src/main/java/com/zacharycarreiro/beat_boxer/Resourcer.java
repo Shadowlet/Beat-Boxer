@@ -119,6 +119,9 @@ public class Resourcer {
         Music P;
         P = allMusics.get("test");
         P.bitRate = 1411;
+        P.barCount = 17;
+        P._tempo = 140;
+        P.beatDensity = 4;
     }
 }
 
