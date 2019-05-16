@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,9 +13,9 @@ class MusicThread extends Thread {
 
 
     public static MusicThread s_instance = null;
-    public static MusicThread CreateInstance(Activity cont, int val) {
+    public static MusicThread CreateInstance(Activity cont, Music music) {
         if (s_instance == null) {
-            MusicThread mThread = new MusicThread(cont, val);
+            MusicThread mThread = new MusicThread(cont, music);
             //
             s_instance = mThread;
             //
@@ -31,25 +32,114 @@ class MusicThread extends Thread {
     public AudioTrack at;
     public Activity context;
 
+    public Music song;
 
-    private MusicThread(Activity cont, long blah) {
+    private MusicThread(Activity cont, Music music) {
         context = cont;
-
-        minBufferSize = AudioTrack.getMinBufferSize(44100,
-                AudioFormat.CHANNEL_CONFIGURATION_STEREO, AudioFormat.ENCODING_PCM_16BIT);
+        song = music;
+        /*
+        minBufferSize = AudioTrack.getMinBufferSize(song.sampleRate,
+                AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT);
+        */
     }
 
     public void run() {
+
+        Log.e("THREAD", "Now running...");
+
         int i = 0;
         byte[] music = null;
-        InputStream is = context.getResources().openRawResource(R.raw.test);
+        InputStream is = context.getResources().openRawResource(song.music);
 
-        at = new AudioTrack(AudioManager.STREAM_MUSIC, 44100,
+
+        int fileLength = (int)song.fileSize;
+
+        /*
+        at = new AudioTrack(AudioManager.STREAM_MUSIC, song.sampleRate,
                 AudioFormat.CHANNEL_CONFIGURATION_STEREO, AudioFormat.ENCODING_PCM_16BIT,
                 minBufferSize, AudioTrack.MODE_STREAM);
+        */
 
-        // Toast.makeText(context, "111111111", Toast.LENGTH_LONG).show();
+        /*
+        byte[] Q;
+        try {
+            Q = new byte[4]; is.read(Q);
+            Log.e("HEADER:", ""+Q); // 00 - RIFF
+            Log.e("HEADER:", ""+is.read(new byte[4]));      // 04 - how big is the rest of this file?
+            Log.e("HEADER:", ""+is.read(new byte[4]));                                 // 08 - WAVE
+            Log.e("HEADER:", ""+is.read(new byte[4]));                                 // 12 - fmt
+            Log.e("HEADER:", ""+is.read(new byte[4]));  // 16 - size of this chunk
+            Log.e("HEADER:", ""+is.read(new byte[2]));     // 20 - what is the audio format? 1 for PCM = Pulse Code Modulation
+            Log.e("HEADER:", ""+is.read(new byte[2]));   // 22 - mono or stereo? 1 or 2?  (or 5 or ???)
+            Log.e("HEADER:", ""+is.read(new byte[4]));     // 24 - samples per second (numbers per second)
+            Log.e("HEADER:", ""+is.read(new byte[4]));       // 28 - bytes per second
+            Log.e("HEADER:", ""+is.read(new byte[2])); // 32 - # of bytes in one sample, for all channels
+            Log.e("HEADER:", ""+is.read(new byte[2]));  // 34 - how many bits in a sample(number)?  usually 16 or 24
+            Log.e("HEADER:", ""+is.read(new byte[4]));                                 // 36 - data
+            Log.e("HEADER:", ""+is.read(new byte[4]));       // 40 - how big is this data chunk
+            // is.read(); // 44 - the actual data itself - just a long string of numbers
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        */
 
+
+        music = new byte[fileLength];
+        try {
+            i = is.read(music, 0, fileLength);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //
+        at = new AudioTrack(AudioManager.STREAM_MUSIC, song.sampleRate,
+                AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT,
+                fileLength, AudioTrack.MODE_STATIC);
+
+        Log.e("THREAD", "1111111111111");
+
+
+        at.setNotificationMarkerPosition((int)song.frameCount);
+        at.setPlaybackPositionUpdateListener(new AudioTrack.OnPlaybackPositionUpdateListener() {
+            @Override
+            public void onPeriodicNotification(AudioTrack track) {
+                // nothing to do
+            }
+            @Override
+            public void onMarkerReached(AudioTrack track) {
+                at.stop();
+                Log.e("THREAD", "3333333333");
+                at.release();
+                Log.e("THREAD", "44444444444");
+                //
+                //
+                s_instance.interrupt();
+                //
+                s_instance = null;
+            }
+        });
+
+
+
+        at.write(music, 0, i);
+        //
+        at.setPlaybackRate(song.sampleRate);
+        at.setPlaybackHeadPosition(0);
+        //
+        at.play();
+
+        //
+        Log.e("THREAD", "2222222");
+        //
+        //
+        while (true) {
+            if (isInterrupted()) break;
+        }
+        //
+        Log.e("THREAD", "555555555555555");
+        //
+        return;
+
+        /*
         try {
             music = new byte[512];
             //
@@ -61,23 +151,43 @@ class MusicThread extends Thread {
                 }
                 //
                 at.write(music, 0, i);
+                //
+                Log.e("Musicing", ""+i);
             }
 
         } catch (IOException e) {
             e.printStackTrace();
+        }*/
+
+
+        /*
+        try {
+            music = new byte[1024];
+            //
+            do {
+                i = is.read(music);
+                //
+                at.write(music, 0, i);
+
+                Log.e("Musicing", ""+i);
+            } while(i != -1);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
+        at.play();
+        //
+        Log.e("THREAD", "2222222");
 
-        // Toast.makeText(context, "2222222222222", Toast.LENGTH_LONG).show();
-
-        at.stop();
-        // Toast.makeText(context, "33333333333333", Toast.LENGTH_LONG).show();
-        at.release();
-        // Toast.makeText(context, "4444444444444444444444", Toast.LENGTH_LONG).show();
+        // at.stop();
+        Log.e("THREAD", "3333333333");
+        // at.release();
+        Log.e("THREAD", "44444444444");
 
 
 
         s_instance = null;
         return;
+        */
     }
 }

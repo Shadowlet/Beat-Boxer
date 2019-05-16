@@ -11,7 +11,9 @@ import java.util.Map;
 public class Resourcer {
 
     public static Map<String, Sprite> allBitmaps = new HashMap<>();
-    public static HashMap<String, Integer> toLoad = new HashMap<>();
+    public static Map<String, Music> allMusics = new HashMap<>();
+    public static HashMap<String, Integer> toLoadBitmaps = new HashMap<>();
+    public static HashMap<String, Integer> toLoadMusics = new HashMap<>();
 
 
     // *** Prepares a list of images to turn into sprites
@@ -27,28 +29,36 @@ public class Resourcer {
         toLoad.put("meter", R.drawable.meter);
         toLoad.put("arrow", R.drawable.arrow);
 
-
+        
+        toLoadMusics.put("test", R.raw.test);
     }
 
+    public static Resources resources;
+
     public static void Setup(Resources r) {
+        resources = r;
+
+
         Preload();
 
         Bitmap mBitmapMeter = BitmapFactory.decodeResource(r,R.drawable.meter);
         Log.d("WIDTH", String.valueOf(mBitmapMeter.getWidth()));
         Log.d("HEIGHT", String.valueOf(mBitmapMeter.getHeight()));
 
+        // ****************************************************************************************
+        // [[ GRAPHICS/IMAGES ]]
         allBitmaps.clear();
         //
         Bitmap bm;
-        for (String Q : toLoad.keySet()) {
-            bm = BitmapFactory.decodeResource(r, toLoad.get(Q));
+        for (String Q : toLoadBitmaps.keySet()) {
+            bm = BitmapFactory.decodeResource(r, toLoadBitmaps.get(Q));
             //
             // bm = Bitmap.createScaledBitmap(bm, bm.getWidth(), bm.getHeight(), false);
             //
             allBitmaps.put(Q, new Sprite(bm));
         }
         //
-        toLoad.clear();
+        toLoadBitmaps.clear();
 
         /*
         //Initialize matrix objects ready for us in drawGame
@@ -63,6 +73,22 @@ public class Resourcer {
         flowerRectToBeDrawn = new Rect((flowerFrameNumber * frameWidth), 0,
                 (flowerFrameNumber * frameWidth +frameWidth)-1, frameHeight);
         */
+
+
+
+        // ****************************************************************************************
+        // [[ AUDIO/MUSIC ]]
+        allMusics.clear();
+        //
+        int mu;
+        for (String Q : toLoadMusics.keySet()) {
+            mu = toLoadMusics.get(Q);
+            //
+            allMusics.put(Q, new Music(mu));
+        }
+        //
+        toLoadMusics.clear();
+
 
 
         Postload();
@@ -108,6 +134,14 @@ public class Resourcer {
         Q = allBitmaps.get("punchingGuy");
         Q.Centralize();
         Q.offsetY = Q.GetHeight();
+
+
+        Music P;
+        P = allMusics.get("test");
+        P.bitRate = 1411;
+        P.barCount = 17;
+        P._tempo = 140;
+        P.beatDensity = 4;
     }
 }
 
