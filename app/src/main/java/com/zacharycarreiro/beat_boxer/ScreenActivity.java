@@ -87,8 +87,16 @@ public class ScreenActivity extends Activity {
         }
 
 
+        public GameTimeline gameplayTimeline;
+
         public void Initialize() {
 
+            // *** Entities, doesn't update/draw automatically
+            gameplayTimeline = GameTimeline.CreateInstance();
+            gameplayTimeline.Play();
+
+
+            // *** Actors
             // new TestingGuy("gggg");
             Meter m = new Meter();
             m.myArrow = new Arrow();
@@ -101,13 +109,17 @@ public class ScreenActivity extends Activity {
 
 
 
+
         }
         public void Update() {
+            gameplayTimeline.Update();
+            //
             for (Actor a : Actor.actorList) {
                 a.Process();
                 //
                 a.Update();
             }
+            //
             //
             Inputter.Clear();
         }
@@ -162,6 +174,9 @@ public class ScreenActivity extends Activity {
 
 
 
+            gameplayTimeline.Draw(canvas, paint);
+            //
+            //
             paint.setColor(Color.argb(255, 255, 0, 0));
             paint.setTextSize(45);
             canvas.drawText(Helper.debugMessage + "\nfps:" + fps, 20, 40, paint);

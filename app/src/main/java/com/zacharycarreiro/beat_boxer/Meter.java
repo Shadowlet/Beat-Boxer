@@ -21,6 +21,7 @@ public class Meter extends DisplayableActor{
 
     float meterValue;
     float swingValue = 10f;
+    float swingPercent = 100f;
     float leeway = 0.7f; // 0.2f;
     float evenBetter = 0.1f;
     float sweetspot = 0;
@@ -61,8 +62,16 @@ public class Meter extends DisplayableActor{
         y = 64 * 13.5f;
 
 
+        GameTimeline gt = GameTimeline.CreateInstance();
 
-        meterValue = (float)Math.sin(gah /swingValue);
+        float swingPercent = (1 - gt.TimeRemainingUntilBeat() / (float)gt.TimeBetweenNextBeat());
+        // Helper.DebugMessage(""+swingPercent);
+        Helper.DebugMessage("Remain: "+gt.lastBeatMoment + " | Next: "+gt.beatMoment);
+        //
+        meterValue = (float)Math.sin((Math.PI*1.10) * swingPercent);
+
+
+        // meterValue = (float)Math.sin(gah /(swingValue *(1/(swingPercent/100))));
 
 
         myArrow.x = Artist.screenWidth * 0.2f   + meterValue* (sprite.GetWidth()/2);
@@ -77,16 +86,16 @@ public class Meter extends DisplayableActor{
         if (difference <= leeway) {
             if (difference <= evenBetter) {
                 Helper.DebugMessage("Hit");
-                swingValue += 5f;
+                swingPercent += 10;
             }
             else if (meterValue <= sweetspot)
             {
                 Helper.DebugMessage("Too Slow");
-                swingValue -= 5f;
+                swingValue += 1f;
             }
             else if (meterValue >= sweetspot) {
                 Helper.DebugMessage("Too fast");
-                swingValue += 5f;
+                swingValue -= 5f;
             }
         }
         else {
