@@ -1,9 +1,12 @@
 package com.zacharycarreiro.beat_boxer;
 
 import android.app.Activity;
+import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioManager;
+import android.media.AudioTimestamp;
 import android.media.AudioTrack;
+import android.os.SystemClock;
 import android.util.Log;
 
 import java.io.IOException;
@@ -117,7 +120,6 @@ class MusicThread extends Thread {
                 }
             }
         });
-
 
 
         at.write(music, 0, i);

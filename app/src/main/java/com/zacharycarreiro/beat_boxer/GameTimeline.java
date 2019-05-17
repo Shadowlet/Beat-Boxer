@@ -1,11 +1,11 @@
 package com.zacharycarreiro.beat_boxer;
 
 import android.app.Activity;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class GameTimeline extends Entity {
 
@@ -52,14 +52,14 @@ public class GameTimeline extends Entity {
         Q.Add(true, false, true, false);
         Q.Add(true, false, true, false);
         Q.Add(true, false, true, false);
-        Q.Add(true, true, true, true);
-        Q.Add(true, true, true, true);
-        Q.Add(true, true, true, true);
-        Q.Add(true, true, true, true);
-        Q.Add(true, true, true, true);
-        Q.Add(true, true, true, true);
-        Q.Add(true, true, true, true);
-        Q.Add(true, true, true, true);
+        Q.Add(true, false, true, false);
+        Q.Add(true, false, true, false);
+        Q.Add(true, false, true, false);
+        Q.Add(true, false, true, false);
+        Q.Add(true, false, true, false);
+        Q.Add(true, false, true, false);
+        Q.Add(true, false, true, false);
+        Q.Add(true, false, true, false);
         //
         gameSongs.add(Q);
 
@@ -106,10 +106,13 @@ public class GameTimeline extends Entity {
 
     public boolean isPlaying = false;
 
+
+    public final int AUDIOOFFSET = 250;
+
     public Runnable ThreadCallback = new Runnable() {
         public void run() {
-            timeStarted = Calendar.getInstance().getTimeInMillis();
-            Log.e("TIMING", "Callback received at: "+Calendar.getInstance().getTimeInMillis());
+            timeStarted = SystemClock.uptimeMillis() +AUDIOOFFSET;
+            Log.e("TIMING", "Callback received at: "+SystemClock.uptimeMillis());
             //
             timeOfCurrentBeat = 0;
 
@@ -149,7 +152,7 @@ public class GameTimeline extends Entity {
             ThreadCallback.run();
         }
         else {
-            Log.e("TIMING", "Thread started at: " + Calendar.getInstance().getTimeInMillis());
+            Log.e("TIMING", "Thread started at: " + SystemClock.uptimeMillis());
             currentSong.thread.DoStart(ThreadCallback);
         }
     }
@@ -160,7 +163,7 @@ public class GameTimeline extends Entity {
         return ConvertTimeToCursor(TimePassedSinceStarted());
     }
     public long TimePassedSinceStarted() {
-        return Calendar.getInstance().getTimeInMillis() - timeStarted;
+        return SystemClock.uptimeMillis() - timeStarted;
     }
 
     public long TimeBetweenNextBeat() {
@@ -212,7 +215,7 @@ public class GameTimeline extends Entity {
                 float cursorBar = (float) Math.floor(currentCursor);
                 //
                 float cursorBeat = (float) Math.floor((currentCursor - cursorBar) * BEATCOUNT);
-                for (int n = 0; n < currentSong.timeBars.size() - 1; n++) {
+                for (int n = 0; n < currentSong.timeBars.size(); n++) {
                     if (n < Math.floor(currentCursor)) continue;
 
 
@@ -268,8 +271,7 @@ public class GameTimeline extends Entity {
             Add(new TimeBar(b1, b2, b3, b4));
         }
         public void Add(TimeBar tb) {
-            if (tb.hasBeat == null) return;
-            if (timeBars.size() > 39) return;
+            // if (tb.hasBeat == null) return;
 
             timeBars.add(tb);
         }
