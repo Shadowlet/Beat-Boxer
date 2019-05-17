@@ -1,6 +1,8 @@
 package com.zacharycarreiro.beat_boxer;
 
+import android.app.Activity;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,18 +32,26 @@ public class GameTimeline extends Entity {
     public void Initialize() {
 
         GameSong Q;
-        Q = new GameSong();
+        Q = new GameSong(Resourcer.allMusics.get("emphasis"));
         //
         // *** The test song
         Q.Add(false, false, false, false); // *** Bar 1
-        Q.Add(true, true, true, true); // *** Bar 2
+        Q.Add(true, false, true, false); // *** Bar 2
         Q.Add(true, false, true, false); // *** Bar 3
-        Q.Add(true, true, true, true); // *** ...
-        Q.Add(true, false, false, false);
-        Q.Add(true, true, true, true);
-        Q.Add(true, true, true, true);
-        Q.Add(false, false, false, false);
-        Q.Add(false, false, false, false);
+        Q.Add(true, false, true, false); // *** ...
+        Q.Add(true, false, true, false);
+        Q.Add(true, false, true, false);
+        Q.Add(true, false, true, false);
+        Q.Add(true, false, true, false);
+        Q.Add(true, false, true, false);
+        Q.Add(true, false, true, false);
+        Q.Add(true, false, true, false);
+        Q.Add(true, false, true, false);
+        Q.Add(true, false, true, false);
+        Q.Add(true, false, true, false);
+        Q.Add(true, false, true, false);
+        Q.Add(true, false, true, false);
+        Q.Add(true, false, true, false);
         Q.Add(true, true, true, true);
         Q.Add(true, true, true, true);
         Q.Add(true, true, true, true);
@@ -96,18 +106,52 @@ public class GameTimeline extends Entity {
 
     public boolean isPlaying = false;
 
+    public Runnable ThreadCallback = new Runnable() {
+        public void run() {
+            timeStarted = Calendar.getInstance().getTimeInMillis();
+            Log.e("TIMING", "Callback received at: "+Calendar.getInstance().getTimeInMillis());
+            //
+            timeOfCurrentBeat = 0;
+
+            isPlaying = true;
+        }
+    };
+
     // *** Begin the game/timeline
     public void Play() {
-        durationOfOneBeat = 400;
+
+        lastCursor = -1;
+        beatMoment = 0;
+        lastBeatMoment = 0;
+
+
+
+        Music currentMusic = currentSong.music;
+
+        float blah = currentMusic.duration / 1000; // *** Convert Micro into Milli
+        Log.e("PLAYING", ""+blah);
+        blah /= currentMusic.barCount; // *** Get length of ONE bar
+        Log.e("PLAYING", ""+blah);
+        blah /= BEATCOUNT; // *** Turn into length of one BEAT
+        Log.e("PLAYING", ""+blah);
+
+        durationOfOneBeat = (int)blah;
+        Log.e("PLAYING", ""+durationOfOneBeat);
         //
-        durationOfOneBar = durationOfOneBeat *4;
-
-
-        timeStarted = Calendar.getInstance().getTimeInMillis();
+        durationOfOneBar = durationOfOneBeat *BEATCOUNT;
         //
-        timeOfCurrentBeat = 0;
-
-        isPlaying = true;
+        //
+        if (currentSong.thread.isAlive()) {
+            currentSong.thread.at.stop();
+            currentSong.thread.at.setPlaybackHeadPosition(0);
+            currentSong.thread.at.play();
+            //
+            ThreadCallback.run();
+        }
+        else {
+            Log.e("TIMING", "Thread started at: " + Calendar.getInstance().getTimeInMillis());
+            currentSong.thread.DoStart(ThreadCallback);
+        }
     }
     public void Stop() {
         isPlaying = false;
@@ -149,55 +193,60 @@ public class GameTimeline extends Entity {
 
     @Override
     public void Update() {
-        if (!isPlaying) return;
 
-        gah++;
+        if (Inputter.check(MotionEvent.ACTION_DOWN, null)) {
+            Play();
+        }
 
-        float currentCursor = ConvertTimeToCursor(TimePassedSinceStarted());
-        //
-        if (lastCursor < beatMoment && beatMoment <= currentCursor) {
-            lastBeatMoment = beatMoment;
+
+        if (isPlaying) {
+            gah++;
+
+            float currentCursor = ConvertTimeToCursor(TimePassedSinceStarted());
             //
-            float tempMoment = -1;
+            if (lastCursor < beatMoment && beatMoment <= currentCursor) {
+                lastBeatMoment = beatMoment;
+                //
+                float tempMoment = -1;
 
-            float cursorBar = (float)Math.floor(currentCursor);
-            //
-            float cursorBeat = (float)Math.floor((currentCursor - cursorBar) *BEATCOUNT);
-            Log.e("BEAT", "Current Beat: "+cursorBeat);
-            for (int n = 0; n < currentSong.timeBars.size()-1; n++) {
-                if (n < Math.floor(currentCursor)) continue;
-                Log.e("BEAT", "Current Bar: "+n);
+                float cursorBar = (float) Math.floor(currentCursor);
+                //
+                float cursorBeat = (float) Math.floor((currentCursor - cursorBar) * BEATCOUNT);
+                for (int n = 0; n < currentSong.timeBars.size() - 1; n++) {
+                    if (n < Math.floor(currentCursor)) continue;
 
 
+                    TimeBar tb = currentSong.timeBars.get(n);
+                    for (int m = 0; m < tb.hasBeat.length; m++) {
+                        if (n > cursorBar) {
+                        } else {
+                            if (m <= cursorBeat) {
+                                continue;
+                            }
+                        }
 
-                TimeBar tb = currentSong.timeBars.get(n);
-                for (int m = 0; m<tb.hasBeat.length; m++) {
-                    if (n > cursorBar) {}
-                    else {
-                        if (m <= cursorBeat) {
-                            continue;
+                        float newCursor = n + (m / ((float) BEATCOUNT));
+
+                        if (currentSong.GetBeat(newCursor)) {
+                            tempMoment = newCursor;
+                            break;
                         }
                     }
-
-                    float newCursor = n+(m/((float)BEATCOUNT));
-
-                    if (currentSong.GetBeat(newCursor)) {
-                        tempMoment = newCursor;
+                    //
+                    if (tempMoment >= 0) {
                         break;
                     }
                 }
                 //
-                if (tempMoment >= 0) { break; }
+                beatMoment = tempMoment;
+                //
+                if (beatMoment < 0) {
+                    Log.e("BEAT", "... Song has ended");
+                }
             }
             //
-            beatMoment = tempMoment;
-            //
-            if (beatMoment < 0) {
-                Log.e("BEAT", "... Song has ended");
-            }
+            lastCursor = currentCursor;
         }
-        //
-        lastCursor = currentCursor;
     }
 
 
@@ -205,7 +254,14 @@ public class GameTimeline extends Entity {
     class GameSong {
         private ArrayList<TimeBar> timeBars = new ArrayList<>();
 
-        public GameSong() {}
+        public Music music;
+        MusicThread thread;
+
+        public GameSong(Music mu) {
+            music = mu;
+
+            thread = MusicThread.CreateInstance(GameManager.CreateInstance().activity, music);
+        }
 
 
         public void Add(boolean b1, boolean b2, boolean b3, boolean b4) {

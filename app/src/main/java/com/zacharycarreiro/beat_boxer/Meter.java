@@ -68,7 +68,7 @@ public class Meter extends DisplayableActor{
         // Helper.DebugMessage(""+swingPercent);
         Helper.DebugMessage("Remain: "+gt.lastBeatMoment + " | Next: "+gt.beatMoment);
         //
-        meterValue = (float)Math.sin((Math.PI*1.10) * swingPercent);
+        meterValue = (float)Math.sin((Math.PI) * swingPercent); // *1.10
 
 
         // meterValue = (float)Math.sin(gah /(swingValue *(1/(swingPercent/100))));

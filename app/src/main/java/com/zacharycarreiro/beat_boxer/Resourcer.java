@@ -18,19 +18,21 @@ public class Resourcer {
 
     // *** Prepares a list of images to turn into sprites
     public static void Preload() {
-        toLoad.put("apple", R.drawable.apple);
-        toLoad.put("gggg", R.drawable.gggg);
-        toLoad.put("ggggg", R.drawable.ggggg);
-        toLoad.put("grid", R.drawable.grid);
-        toLoad.put("grid2", R.drawable.grid2);
+        toLoadBitmaps.put("apple", R.drawable.apple);
+        toLoadBitmaps.put("gggg", R.drawable.gggg);
+        toLoadBitmaps.put("ggggg", R.drawable.ggggg);
+        toLoadBitmaps.put("grid", R.drawable.grid);
+        toLoadBitmaps.put("grid2", R.drawable.grid2);
 
-        toLoad.put("punchingGuy", R.drawable.punchingguy);
-        toLoad.put("punchingBag", R.drawable.punchingbag);
-        toLoad.put("meter", R.drawable.meter);
-        toLoad.put("arrow", R.drawable.arrow);
+        toLoadBitmaps.put("punchingGuy", R.drawable.punchingguy);
+        toLoadBitmaps.put("punchingBag", R.drawable.punchingbag);
+        toLoadBitmaps.put("meter", R.drawable.meter);
+        toLoadBitmaps.put("arrow", R.drawable.arrow);
 
         
         toLoadMusics.put("test", R.raw.test);
+        toLoadMusics.put("emphasis", R.raw.emphasis);
+
     }
 
     public static Resources resources;
@@ -139,7 +141,13 @@ public class Resourcer {
         Music P;
         P = allMusics.get("test");
         P.bitRate = 1411;
-        P.barCount = 17;
+        P.barCount = 25;
+        P._tempo = 140;
+        P.beatDensity = 4;
+
+        P = allMusics.get("emphasis");
+        P.bitRate = 1411;
+        P.barCount = 25;
         P._tempo = 140;
         P.beatDensity = 4;
     }

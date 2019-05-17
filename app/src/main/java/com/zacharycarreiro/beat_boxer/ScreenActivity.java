@@ -73,6 +73,13 @@ public class ScreenActivity extends Activity {
 
 
 
+
+            GameManager gm = GameManager.CreateInstance();
+            gm.Initialize();
+            //
+            gm.Setup((Activity)context);
+
+
             Initialize();
         }
 
@@ -93,7 +100,6 @@ public class ScreenActivity extends Activity {
 
             // *** Entities, doesn't update/draw automatically
             gameplayTimeline = GameTimeline.CreateInstance();
-            gameplayTimeline.Play();
 
 
             // *** Actors

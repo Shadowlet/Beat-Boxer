@@ -8,6 +8,7 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
 
 class MusicThread extends Thread {
 
@@ -37,11 +38,22 @@ class MusicThread extends Thread {
     private MusicThread(Activity cont, Music music) {
         context = cont;
         song = music;
-        /*
+
+
         minBufferSize = AudioTrack.getMinBufferSize(song.sampleRate,
                 AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT);
-        */
     }
+
+
+    public Runnable callback;
+    public void DoStart(Runnable r) {
+        callback = r;
+        //
+        start();
+    }
+
+    // ??? <-- UNFORGIVEABLE!
+    public boolean isDone = false;
 
     public void run() {
 
@@ -53,35 +65,7 @@ class MusicThread extends Thread {
 
 
         int fileLength = (int)song.fileSize;
-
-        /*
-        at = new AudioTrack(AudioManager.STREAM_MUSIC, song.sampleRate,
-                AudioFormat.CHANNEL_CONFIGURATION_STEREO, AudioFormat.ENCODING_PCM_16BIT,
-                minBufferSize, AudioTrack.MODE_STREAM);
-        */
-
-        /*
-        byte[] Q;
-        try {
-            Q = new byte[4]; is.read(Q);
-            Log.e("HEADER:", ""+Q); // 00 - RIFF
-            Log.e("HEADER:", ""+is.read(new byte[4]));      // 04 - how big is the rest of this file?
-            Log.e("HEADER:", ""+is.read(new byte[4]));                                 // 08 - WAVE
-            Log.e("HEADER:", ""+is.read(new byte[4]));                                 // 12 - fmt
-            Log.e("HEADER:", ""+is.read(new byte[4]));  // 16 - size of this chunk
-            Log.e("HEADER:", ""+is.read(new byte[2]));     // 20 - what is the audio format? 1 for PCM = Pulse Code Modulation
-            Log.e("HEADER:", ""+is.read(new byte[2]));   // 22 - mono or stereo? 1 or 2?  (or 5 or ???)
-            Log.e("HEADER:", ""+is.read(new byte[4]));     // 24 - samples per second (numbers per second)
-            Log.e("HEADER:", ""+is.read(new byte[4]));       // 28 - bytes per second
-            Log.e("HEADER:", ""+is.read(new byte[2])); // 32 - # of bytes in one sample, for all channels
-            Log.e("HEADER:", ""+is.read(new byte[2]));  // 34 - how many bits in a sample(number)?  usually 16 or 24
-            Log.e("HEADER:", ""+is.read(new byte[4]));                                 // 36 - data
-            Log.e("HEADER:", ""+is.read(new byte[4]));       // 40 - how big is this data chunk
-            // is.read(); // 44 - the actual data itself - just a long string of numbers
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
+        Log.e("THREAD", ""+fileLength);
 
 
         music = new byte[fileLength];
@@ -93,12 +77,14 @@ class MusicThread extends Thread {
         //
         at = new AudioTrack(AudioManager.STREAM_MUSIC, song.sampleRate,
                 AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT,
-                fileLength, AudioTrack.MODE_STATIC);
+                fileLength*2, AudioTrack.MODE_STATIC);
 
         Log.e("THREAD", "1111111111111");
 
 
-        at.setNotificationMarkerPosition((int)song.frameCount);
+        // at.setNotificationMarkerPosition(10);
+
+        at.setNotificationMarkerPosition(1000);
         at.setPlaybackPositionUpdateListener(new AudioTrack.OnPlaybackPositionUpdateListener() {
             @Override
             public void onPeriodicNotification(AudioTrack track) {
@@ -106,15 +92,29 @@ class MusicThread extends Thread {
             }
             @Override
             public void onMarkerReached(AudioTrack track) {
-                at.stop();
-                Log.e("THREAD", "3333333333");
-                at.release();
-                Log.e("THREAD", "44444444444");
-                //
-                //
-                s_instance.interrupt();
-                //
-                s_instance = null;
+                Log.e("THREAD", "MARKER?");
+
+                if (isDone) {
+                    Log.e("THREAD", "END");
+
+                    at.stop();
+                    Log.e("THREAD", "3333333333");
+                    at.release();
+                    Log.e("THREAD", "44444444444");
+                    //
+                    //
+                    s_instance.interrupt();
+                    //
+                    s_instance = null;
+                }
+                else {
+                    isDone = true;
+                    at.setNotificationMarkerPosition((int)song.frameCount);
+
+                    Log.e("THREAD", "BEGIN");
+
+                    callback.run();
+                }
             }
         });
 
@@ -122,11 +122,15 @@ class MusicThread extends Thread {
 
         at.write(music, 0, i);
         //
+        at.play();
+        at.stop();
+        //
         at.setPlaybackRate(song.sampleRate);
         at.setPlaybackHeadPosition(0);
         //
+        //
+        Log.e("TIMING", "Music played at: "+ Calendar.getInstance().getTimeInMillis());
         at.play();
-
         //
         Log.e("THREAD", "2222222");
         //
