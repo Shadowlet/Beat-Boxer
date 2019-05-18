@@ -91,7 +91,6 @@ public class GameTimeline extends Entity {
 
 
 
-    public int gah;
     public int durationOfOneBeat;
     public int durationOfOneBar;
 
@@ -117,6 +116,10 @@ public class GameTimeline extends Entity {
             timeOfCurrentBeat = 0;
 
             isPlaying = true;
+
+
+            lastBeatMoment = 0;
+            beatMoment = GetMomentOfNextBeat(0);
         }
     };
 
@@ -182,6 +185,50 @@ public class GameTimeline extends Entity {
         return ConvertCursorToTime(beatMoment) - TimePassedSinceStarted();
     }
 
+
+    public float GetMomentOfNextBeat(int skip) {
+        float currentCursor = lastBeatMoment; // ConvertTimeToCursor(TimePassedSinceStarted());
+        float tempMoment = -1;
+
+        float cursorBar = (float) Math.floor(currentCursor);
+        //
+        float cursorBeat = (float) Math.floor((currentCursor - cursorBar) * BEATCOUNT);
+        for (int n = 0; n < currentSong.timeBars.size(); n++) {
+            if (n < Math.floor(currentCursor)) continue;
+
+
+            TimeBar tb = currentSong.timeBars.get(n);
+            for (int m = 0; m < tb.hasBeat.length; m++) {
+                if (n > cursorBar) {
+                } else {
+                    if (m <= cursorBeat) {
+                        continue;
+                    }
+                }
+
+                if (skip > 0) {
+                    skip -= 1;
+                    continue;
+                }
+
+
+                float newCursor = n + (m / ((float) BEATCOUNT));
+
+                if (currentSong.GetBeat(newCursor)) {
+                    tempMoment = newCursor;
+                    break;
+                }
+            }
+            //
+            if (tempMoment >= 0) {
+                break;
+            }
+        }
+
+
+        return tempMoment;
+    }
+
     public float ConvertTimeToCursor(long time) {
         return time / (1f * durationOfOneBar);
     }
@@ -190,66 +237,100 @@ public class GameTimeline extends Entity {
     }
 
 
+    public void RegisterResult() {
+        Log.e("BEAT", "NEXT BEAT");
+
+
+        GameManager gm = GameManager.CreateInstance();
+        //
+        Meter meter = gm.obj_meter;
+
+
+        lastBeatMoment = beatMoment;
+        //
+        if (isDucking) {
+            isDucking = false;
+        }
+        else {
+            Log.e("BEAT", "Hit Result: " + hitResult);
+            if (hitResult == Meter.HITRESULT_MISS) {
+                // *** On "EASY", you automatically duck.
+                // *** On "HARD", you ded.
+                meter.Duck();
+                isDucking = true;
+            } else if (hitResult == Meter.HITRESULT_DODGE) {
+                meter.Duck();
+                isDucking = true;
+            } else {
+                switch (hitResult) {
+                    case Meter.HITRESULT_FAST:
+                        break;
+                    case Meter.HITRESULT_SLOW:
+                        break;
+                    case Meter.HITRESULT_PERFECT:
+                        break;
+                }
+            }
+        }
+        //
+        beatMoment = GetMomentOfNextBeat(0);
+        hitResult = Meter.HITRESULT_MISS;
+        meter.initialMeter = meter.meterValue;
+        // Log.e("BEAT", ""+lastBeatMoment+" and "+beatMoment);
+        Helper.DebugMessage("Remain: "+lastBeatMoment + " | Next: "+beatMoment);
+
+        //
+        if (beatMoment < 0) {
+            Log.e("BEAT", "... Song has ended");
+        }
+    }
+
+
     float lastCursor = -1;
     float beatMoment = 0;
     float lastBeatMoment = 0;
 
+
+    boolean isDucking = false;
+    int hitResult = Meter.HITRESULT_MISS;
+
     @Override
     public void Update() {
 
-        if (Inputter.check(MotionEvent.ACTION_DOWN, null)) {
-            Play();
+        if (!isPlaying) {
+            if (Inputter.check(MotionEvent.ACTION_DOWN, null)) {
+                Play();
+            }
+            return;
         }
 
 
-        if (isPlaying) {
-            gah++;
+        GameManager gm = GameManager.CreateInstance();
+        //
+        Meter meter = gm.obj_meter;
+        meter.updateMeter();
 
-            float currentCursor = ConvertTimeToCursor(TimePassedSinceStarted());
-            //
-            if (lastCursor < beatMoment && beatMoment <= currentCursor) {
-                lastBeatMoment = beatMoment;
+
+        float currentCursor = ConvertTimeToCursor(TimePassedSinceStarted());
+        //
+        if (Inputter.check(MotionEvent.ACTION_DOWN, null)) {
+            if (hitResult == Meter.HITRESULT_MISS) {
+                int tempResult = meter.PunchBag();
+                hitResult = tempResult;
                 //
-                float tempMoment = -1;
-
-                float cursorBar = (float) Math.floor(currentCursor);
-                //
-                float cursorBeat = (float) Math.floor((currentCursor - cursorBar) * BEATCOUNT);
-                for (int n = 0; n < currentSong.timeBars.size(); n++) {
-                    if (n < Math.floor(currentCursor)) continue;
-
-
-                    TimeBar tb = currentSong.timeBars.get(n);
-                    for (int m = 0; m < tb.hasBeat.length; m++) {
-                        if (n > cursorBar) {
-                        } else {
-                            if (m <= cursorBeat) {
-                                continue;
-                            }
-                        }
-
-                        float newCursor = n + (m / ((float) BEATCOUNT));
-
-                        if (currentSong.GetBeat(newCursor)) {
-                            tempMoment = newCursor;
-                            break;
-                        }
-                    }
-                    //
-                    if (tempMoment >= 0) {
-                        break;
-                    }
-                }
-                //
-                beatMoment = tempMoment;
-                //
-                if (beatMoment < 0) {
-                    Log.e("BEAT", "... Song has ended");
+                if (hitResult != Meter.HITRESULT_MISS) {
+                    RegisterResult();
                 }
             }
-            //
-            lastCursor = currentCursor;
         }
+
+
+        float leewayMoment = beatMoment+(beatMoment-lastBeatMoment)*meter.leeway;
+        if (currentCursor >= leewayMoment) {
+            RegisterResult();
+        }
+        //
+        lastCursor = currentCursor;
     }
 
 

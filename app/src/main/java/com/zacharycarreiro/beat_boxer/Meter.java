@@ -13,16 +13,17 @@ public class Meter extends DisplayableActor{
 
     Arrow myArrow;
 
-    int gah;
-
 
     Rect punchTouchArea = new Rect(Artist.screenWidth/2, 0, Artist.screenWidth, Artist.screenHeight);
     Rect duckTouchArea = new Rect(0, 0, Artist.screenWidth/2, Artist.screenHeight);
 
     float meterValue;
+    float initialMeter = 0.0f;
+    float visualValue = 0.0f;
+
     float swingValue = 10f;
     float swingPercent = 100f;
-    float leeway = 0.7f; // 0.2f;
+    float leeway = 0.2f;
     float evenBetter = 0.1f;
     float sweetspot = 0;
 
@@ -36,18 +37,18 @@ public class Meter extends DisplayableActor{
     public void Update() {
         super.Update();
 
-        updateMeter();
-
+        /*
         if (Inputter.check(MotionEvent.ACTION_DOWN, punchTouchArea)){
-            punchBag();
+            PunchBag();
             Log.d("STATE", "Punching");
         }
         else if(Inputter.check(MotionEvent.ACTION_DOWN, duckTouchArea)){
             Duck();
             Log.d("STATE", "Ducking");
         }
+        */
+
         //Helper.DebugMessage("" + meterValue);
-        gah++;
     }
 
     @Override
@@ -66,48 +67,63 @@ public class Meter extends DisplayableActor{
 
         float swingPercent = (1 - gt.TimeRemainingUntilBeat() / (float)gt.TimeBetweenNextBeat());
         // Helper.DebugMessage(""+swingPercent);
-        Helper.DebugMessage("Remain: "+gt.lastBeatMoment + " | Next: "+gt.beatMoment);
+        // Helper.DebugMessage(""+meterValue);
         //
         meterValue = (float)Math.sin((Math.PI) * swingPercent); // *1.10
+        //
+        visualValue = initialMeter + (1-initialMeter) * swingPercent;
+        visualValue = (float)Math.sin((Math.PI) *visualValue);
 
 
-        // meterValue = (float)Math.sin(gah /(swingValue *(1/(swingPercent/100))));
+                // meterValue = (float)Math.sin(gah /(swingValue *(1/(swingPercent/100))));
 
 
-        myArrow.x = Artist.screenWidth * 0.2f   + meterValue* (sprite.GetWidth()/2);
+        myArrow.x = Artist.screenWidth * 0.2f   + visualValue* (sprite.GetWidth()/2);
         myArrow.y = y - 64 * 1;
     }
 
-    private void punchBag(){
-        gah = 0;
+
+
+    public static final int HITRESULT_PERFECT = 0;
+    public static final int HITRESULT_FAST = 1;
+    public static final int HITRESULT_SLOW = 2;
+    public static final int HITRESULT_MISS = 3;
+    public static final int HITRESULT_DODGE = 4;
+
+    public int PunchBag(){
         float difference;
         difference = Math.abs(meterValue - sweetspot);
 
         if (difference <= leeway) {
             if (difference <= evenBetter) {
                 Helper.DebugMessage("Hit");
-                swingPercent += 10;
+                // swingPercent += 10;
+
+                return HITRESULT_PERFECT;
             }
             else if (meterValue <= sweetspot)
             {
                 Helper.DebugMessage("Too Slow");
-                swingValue += 1f;
+                // swingValue += 1f;
+
+                return HITRESULT_SLOW;
             }
             else if (meterValue >= sweetspot) {
                 Helper.DebugMessage("Too fast");
-                swingValue -= 5f;
+                // swingValue -= 5f;
+
+                return HITRESULT_FAST;
             }
         }
         else {
             Helper.DebugMessage("Miss");
-            // You die a most embarrassing death
         }
 
         //Helper.DebugMessage("Too Slow");
-
+        return HITRESULT_MISS;
     }
 
-    private void Duck(){
+    public void Duck(){
 
     }
 }

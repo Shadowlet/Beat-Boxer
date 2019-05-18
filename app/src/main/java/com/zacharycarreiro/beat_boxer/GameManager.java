@@ -20,6 +20,9 @@ public class GameManager {
     public Activity activity;
 
 
+    public Meter obj_meter;
+
+
 
     public void Initialize() {
 

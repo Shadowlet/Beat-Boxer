@@ -47,6 +47,15 @@ public class PunchingBag extends DisplayableActor {
         myGuy.x = x - 64 * 5;
         myGuy.y = y + 64 * 9;
 
-        image_rotate = -myMeter.meterValue * 80;
+        image_rotate = -myMeter.visualValue * 80;
+
+
+        GameTimeline gtl = GameTimeline.CreateInstance();
+        if (gtl.isDucking) {
+            myGuy.image_yscale = -1;
+        }
+        else {
+            myGuy.image_yscale = 1;
+        }
     }
 }

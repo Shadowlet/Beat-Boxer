@@ -98,6 +98,9 @@ public class ScreenActivity extends Activity {
 
         public void Initialize() {
 
+
+            GameManager gm = GameManager.CreateInstance();
+
             // *** Entities, doesn't update/draw automatically
             gameplayTimeline = GameTimeline.CreateInstance();
 
@@ -113,7 +116,9 @@ public class ScreenActivity extends Activity {
             p.myGuy = g;
             p.myMeter = m;
 
-
+            // -------------------------------------------------------------
+            // [Game Manager Stuff]
+            gm.obj_meter = m;
 
 
         }
