@@ -60,7 +60,7 @@ class MusicThread extends Thread {
 
     public void run() {
 
-        Log.e("THREAD", "Now running...");
+        Log.e("THREAD", "Now playing... " + song.name);
 
         int i = 0;
         byte[] music = null;

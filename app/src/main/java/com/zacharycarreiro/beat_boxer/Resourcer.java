@@ -32,6 +32,7 @@ public class Resourcer {
         
         toLoadMusics.put("test", R.raw.test);
         toLoadMusics.put("emphasis", R.raw.emphasis);
+        toLoadMusics.put("c_hc", R.raw.c_hc);
 
     }
 
@@ -86,7 +87,10 @@ public class Resourcer {
         for (String Q : toLoadMusics.keySet()) {
             mu = toLoadMusics.get(Q);
             //
-            allMusics.put(Q, new Music(mu));
+            Music music = new Music(mu);
+            music.name = Q;
+            //
+            allMusics.put(Q, music);
         }
         //
         toLoadMusics.clear();
@@ -150,6 +154,15 @@ public class Resourcer {
         P.barCount = 25;
         P._tempo = 140;
         P.beatDensity = 4;
+        P.preDelay = 250;
+
+
+        P = allMusics.get("c_hc");
+        P.bitRate = 1411;
+        P.barCount = 64;
+        P._tempo = 180;
+        P.beatDensity = 16;
+        P.preDelay = 250;
     }
 }
 

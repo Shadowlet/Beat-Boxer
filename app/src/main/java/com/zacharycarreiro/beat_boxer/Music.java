@@ -13,6 +13,7 @@ import java.io.IOException;
 
 public class Music {
     int music;
+    String name;
 
 
     // *** Resourcer information
@@ -29,6 +30,7 @@ public class Music {
     long frameCount; // Total number of samples
 
     //
+    long preDelay; // The audio hardware "delay" of the song
     // long timeInSeconds;
 
     public Music(int musicIndex) {

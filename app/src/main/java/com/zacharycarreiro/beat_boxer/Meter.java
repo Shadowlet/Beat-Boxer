@@ -23,7 +23,7 @@ public class Meter extends DisplayableActor{
 
     float swingValue = 10f;
     float swingPercent = 100f;
-    float leeway = 0.2f;
+    float leeway = 0.5f;
     float evenBetter = 0.1f;
     float sweetspot = 0;
 

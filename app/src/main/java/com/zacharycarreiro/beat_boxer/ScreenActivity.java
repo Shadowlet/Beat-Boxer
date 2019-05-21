@@ -19,6 +19,15 @@ import android.view.SurfaceView;
 import android.view.Window;
 import android.view.WindowManager;
 
+
+/*
+Changes:
+- Viewport (allows for "screen shakes" by VERY briefly "zooming in")
+- Higher beat resolution (it is now possible to make 1/16th beats, not just 1/4th)
+	*** Fully backwards-compatible-- NP
+- New "types" of beats (Easy = forgiving, Hard = kills you)
+ */
+
 public class ScreenActivity extends Activity {
 
     Canvas canvas;
@@ -57,6 +66,8 @@ public class ScreenActivity extends Activity {
         volatile boolean gameIsOn;
         Paint paint;
 
+        public GameManager gm;
+
         public GamePlayView(Context context) {
             super(context);
             ourHolder = getHolder();
@@ -74,13 +85,10 @@ public class ScreenActivity extends Activity {
 
 
 
-            GameManager gm = GameManager.CreateInstance();
+            gm = GameManager.CreateInstance();
             gm.Initialize();
             //
             gm.Setup((Activity)context);
-
-
-            Initialize();
         }
 
         @Override
@@ -94,45 +102,9 @@ public class ScreenActivity extends Activity {
         }
 
 
-        public GameTimeline gameplayTimeline;
 
-        public void Initialize() {
-
-
-            GameManager gm = GameManager.CreateInstance();
-
-            // *** Entities, doesn't update/draw automatically
-            gameplayTimeline = GameTimeline.CreateInstance();
-
-
-            // *** Actors
-            // new TestingGuy("gggg");
-            Meter m = new Meter();
-            m.myArrow = new Arrow();
-
-
-            PunchingGuy g = new PunchingGuy();
-            PunchingBag p = new PunchingBag();
-            p.myGuy = g;
-            p.myMeter = m;
-
-            // -------------------------------------------------------------
-            // [Game Manager Stuff]
-            gm.obj_meter = m;
-
-
-        }
         public void Update() {
-            gameplayTimeline.Update();
-            //
-            for (Actor a : Actor.actorList) {
-                a.Process();
-                //
-                a.Update();
-            }
-            //
-            //
-            Inputter.Clear();
+            gm.Update();
         }
 
         private void _Draw() {
@@ -150,42 +122,7 @@ public class ScreenActivity extends Activity {
 
         }
         public void Draw() {
-            canvas.drawColor(Color.argb(255, 0, 0, 0));//the background
-            //
-            //
-            Artist.drawBitmap("grid2", 0, 0, 0, 1f, 1f, 0);
-            //
-            //
-            paint.setColor(Color.argb(255,180,180,180));
-            Artist.drawRect(0, 0, Artist.screenWidth, Artist.screenHeight/3);
-            Artist.drawRect(0, Artist.screenHeight - Artist.screenHeight/3, Artist.screenWidth, Artist.screenHeight);
-            //
-            paint.setColor(Color.argb(255,0,0,0));
-            Artist.drawRect(0, 0, Artist.screenWidth, Artist.screenHeight/7);
-            Artist.drawRect(0, Artist.screenHeight - Artist.screenHeight/7, Artist.screenWidth, Artist.screenHeight);
-            //
-            for (Actor a : Actor.actorList) {
-                a.Draw(canvas, paint);
-            }
-
-
-
-
-
-
-
-
-
-            paint.setColor(Color.argb(255,0,255,255));
-            //Artist.drawRect(Artist.screenWidth * 0.5f, Artist.screenHeight * 0.8f, Artist.screenWidth * 0.5f +10, Artist.screenHeight * 0.8f +10);
-
-
-
-
-
-
-
-            gameplayTimeline.Draw(canvas, paint);
+            gm.Draw(canvas, paint);
             //
             //
             paint.setColor(Color.argb(255, 255, 0, 0));
@@ -238,8 +175,6 @@ public class ScreenActivity extends Activity {
         public boolean onTouchEvent(MotionEvent event) {
             return Inputter.Read(event);
         }
-
-
     }
 
     @Override
@@ -275,6 +210,4 @@ public class ScreenActivity extends Activity {
         }
         return false;
     }
-
-
 }

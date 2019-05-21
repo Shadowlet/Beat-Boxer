@@ -21,9 +21,9 @@ public class Artist {
     public static float ratioHeight = 1.0f;
     public static int offsetX = 0;
     public static int offsetY = 0;
-
-
     public static boolean retainRatio = false;
+
+    public static Viewport viewport;
 
 
 
@@ -40,6 +40,9 @@ public class Artist {
         d.getSize(displaySize);
         //
         SetScreenSize(displaySize.x, displaySize.y);
+
+
+        viewport = new Viewport(0, 0, screenWidth, screenHeight);
 
 
         isInit = true;
@@ -143,18 +146,20 @@ public class Artist {
 
 
         float mn = dm.density; // *** The display density... Don't ask me.
+        float wzoom = viewport.GetWZoom();
+        float hzoom = viewport.GetHZoom();
 
         c.save();
         //
         //
-        c.translate(x, y); // *** Translate
+        c.translate(-viewport.left + x /wzoom, -viewport.top + y /hzoom); // *** Translate
         //
-        c.translate(-image.offsetX *sclx, -image.offsetY *scly); // Orientation...?
+        c.translate(-image.offsetX *sclx /wzoom, -image.offsetY *scly /hzoom); // Orientation...?
         //
-        c.rotate(rot, image.offsetX *sclx, image.offsetY *scly);
+        c.rotate(rot, image.offsetX *sclx /wzoom, image.offsetY *scly /hzoom);
         //
         //
-        c.scale(sclx, scly);
+        c.scale(sclx /wzoom, scly /hzoom);
         //
         //
         int tx, ty;
@@ -177,5 +182,22 @@ public class Artist {
     }
 
 
+    public static class Viewport {
+        public int left;
+        public int top;
+        public int width;
+        public int height;
 
+        public Viewport(int l, int t, int w, int h) {
+            left = l;
+            top = t;
+            width = w;
+            height = h;
+        }
+
+
+        public float GetWZoom() { return width/((float)screenWidth); }
+        public float GetHZoom() { return height/((float)screenHeight); }
+        public float GetZoom() { return width/((float)screenWidth); }
+    }
 }
