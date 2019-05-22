@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 
 public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener {
@@ -17,9 +19,9 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        Button buttonPlay = (Button)findViewById(R.id.buttonPlay);
-        Button buttonControls = (Button)findViewById(R.id.buttonControls);
-        Button buttonQuit = (Button)findViewById(R.id.buttonQuit);
+        Button buttonPlay = findViewById(R.id.buttonPlay);
+        Button buttonControls = findViewById(R.id.buttonControls);
+        Button buttonQuit = findViewById(R.id.buttonQuit);
 
         buttonPlay.setOnClickListener(this);
         buttonControls.setOnClickListener(this);
@@ -28,6 +30,8 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
 
         iPlay = new Intent(this, ScreenActivity.class);
         iControls = new Intent(this, ControlsActivity.class);
+
+
 
     }
 

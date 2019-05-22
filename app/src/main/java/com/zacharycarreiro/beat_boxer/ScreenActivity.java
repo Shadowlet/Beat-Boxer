@@ -97,7 +97,7 @@ public class ScreenActivity extends Activity {
         public GameTimeline gameplayTimeline;
 
         public void Initialize() {
-
+        /*
             // *** Entities, doesn't update/draw automatically
             gameplayTimeline = GameTimeline.CreateInstance();
 
@@ -114,11 +114,12 @@ public class ScreenActivity extends Activity {
             p.myMeter = m;
 
 
+        */
 
 
         }
         public void Update() {
-            gameplayTimeline.Update();
+            //gameplayTimeline.Update();
             //
             for (Actor a : Actor.actorList) {
                 a.Process();
@@ -180,7 +181,7 @@ public class ScreenActivity extends Activity {
 
 
 
-            gameplayTimeline.Draw(canvas, paint);
+            // gameplayTimeline.Draw(canvas, paint);
             //
             //
             paint.setColor(Color.argb(255, 255, 0, 0));
