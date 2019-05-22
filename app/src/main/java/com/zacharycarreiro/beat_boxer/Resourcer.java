@@ -29,6 +29,11 @@ public class Resourcer {
         toLoadBitmaps.put("meter", R.drawable.meter);
         toLoadBitmaps.put("arrow", R.drawable.arrow);
 
+        toLoadBitmaps.put("lukas_duck", R.drawable.lukas_duck);
+        toLoadBitmaps.put("lukas_idle", R.drawable.lukas_idle);
+        toLoadBitmaps.put("lukas_punch", R.drawable.lukas_punch);
+        toLoadBitmaps.put("lukas_ready", R.drawable.lukas_ready);
+
         
         toLoadMusics.put("test", R.raw.test);
         toLoadMusics.put("emphasis", R.raw.emphasis);
@@ -141,6 +146,22 @@ public class Resourcer {
         Q.Centralize();
         Q.offsetY = Q.GetHeight();
 
+        Q = allBitmaps.get("lukas_punch");
+        Q.Centralize();
+        Q.offsetY = Q.GetHeight();
+        Q = allBitmaps.get("lukas_duck");
+        Q.Centralize();
+        Q.offsetY = Q.GetHeight();
+        Q = allBitmaps.get("lukas_ready");
+        Q.Centralize();
+        Q.offsetY = Q.GetHeight();
+        Q = allBitmaps.get("lukas_idle");
+        Q.frameCount = 2;
+        Q.frameAcross = 2;
+        Q.frameWidth = Q.GetWidth()/2;
+        Q.Centralize();
+        Q.offsetY = Q.GetHeight();
+
 
         Music P;
         P = allMusics.get("test");
@@ -163,6 +184,7 @@ public class Resourcer {
         P._tempo = 180;
         P.beatDensity = 16;
         P.preDelay = 250;
+        P.walkmanned = R.raw.c_hc_walkman;
     }
 }
 

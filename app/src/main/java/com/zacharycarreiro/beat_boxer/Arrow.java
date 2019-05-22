@@ -9,6 +9,8 @@ public class Arrow extends DisplayableActor{
 
     Arrow() {
         super("arrow");
+
+        onScreen = true;
     }
 
 

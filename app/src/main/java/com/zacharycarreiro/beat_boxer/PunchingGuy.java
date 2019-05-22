@@ -7,12 +7,20 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 
-public class PunchingGuy extends DisplayableActor {
+public class PunchingGuy extends AnimatedActor {
 
 
 
     PunchingGuy() {
         super("punchingGuy");
+
+
+        // RegisterAnim("idle", "lukas_idle");
+        // RegisterAnim("ready", "lukas_ready");
+        // RegisterAnim("punch", "lukas_punch");
+        // RegisterAnim("duck", "lukas_duck");
+
+        frame_speed = 5/Helper.SECOND;
     }
 
 

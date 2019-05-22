@@ -1,5 +1,9 @@
 package com.zacharycarreiro.beat_boxer;
 
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.media.MediaPlayer;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -24,7 +28,7 @@ public class GameTimeline extends Entity {
 
     ArrayList<GameSong> gameSongs = new ArrayList<>();
 
-
+    MediaPlayer mp;
 
     public void Initialize() {
 
@@ -40,6 +44,18 @@ public class GameTimeline extends Entity {
 
 
         Construct(2);
+
+
+        if (currentSong.music.walkmanned != 0) {
+            mp = MediaPlayer.create(GameManager.CreateInstance().activity, currentSong.music.walkmanned);
+            //
+            // mp.seekTo(mp.getDuration()/32);
+            mp.setVolume(0.3f, 0.3f);
+            mp.setLooping(true);
+            mp.seekTo(3000); // *** He's always 3 seconds into the song!
+            //
+            mp.start();
+        }
     }
 
 
@@ -106,6 +122,11 @@ public class GameTimeline extends Entity {
 
     // *** Begin the game/timeline
     public void Play() {
+
+        if (mp != null) {
+            mp.stop();
+        }
+
 
         lastCursor = -1;
         beatMoment = 0;
@@ -243,6 +264,10 @@ public class GameTimeline extends Entity {
         }
     }
 
+
+    long strikeTime;
+    int lastResult = Meter.HITRESULT_PERFECT;
+
     public void RegisterResult() {
         Log.e("BEAT", "NEXT BEAT");
 
@@ -315,6 +340,9 @@ public class GameTimeline extends Entity {
             }
         }
         //
+        lastResult = hitResult;
+        strikeTime = TimePassedSinceStarted();
+        //
         PrepareNextBeat();
 
         // Log.e("BEAT", ""+lastBeatMoment+" and "+beatMoment);
@@ -342,8 +370,17 @@ public class GameTimeline extends Entity {
     boolean isDucking = false;
     int hitResult = Meter.HITRESULT_MISS;
 
+
+    int runningTime = 0;
+
     @Override
     public void Update() {
+        GameManager gm = GameManager.CreateInstance();
+        //
+        Meter meter = gm.obj_meter;
+
+
+        runningTime += 1;
 
         // ----------------------------------------------------------------------------------------
         // *** Screen Effects!
@@ -359,16 +396,15 @@ public class GameTimeline extends Entity {
 
 
         if (!isPlaying) {
-            if (Inputter.check(MotionEvent.ACTION_DOWN, null)) {
-                Play();
+            if (runningTime > Helper.SECOND*6) {
+                if (Inputter.check(MotionEvent.ACTION_DOWN, null)) {
+                    Play();
+                }
             }
             return;
         }
 
 
-        GameManager gm = GameManager.CreateInstance();
-        //
-        Meter meter = gm.obj_meter;
         meter.updateMeter();
 
 
@@ -396,6 +432,27 @@ public class GameTimeline extends Entity {
         lastCursor = currentCursor;
     }
 
+
+    @Override
+    public void Draw(Canvas c, Paint p) {
+        float wakeupWide = 0.1f*Helper.Longevity(runningTime, Helper.SECOND, Helper.SECOND/3)
+                + 0.9f*Helper.Longevity(runningTime, Helper.SECOND*3, Helper.SECOND*2);
+
+        int targetY = (int)(Artist.screenHeight*0.45f);
+        Artist.SetColor(Color.argb(255, 0, 0, 0));
+        Artist.drawRect(0, 0, Artist.screenWidth, Helper.Lerp(targetY, 0, wakeupWide));
+        Artist.drawRect(0, Helper.Lerp(targetY, Artist.screenHeight, wakeupWide), Artist.screenWidth, Artist.screenHeight);
+
+
+
+        if (!isPlaying && runningTime > Helper.SECOND*8) {
+            float fadeJist = Helper.Longevity(runningTime, Helper.SECOND*8, Helper.SECOND*2);
+
+            p.setColor(Color.argb((int)(255*fadeJist), 0, 0, 0));
+            p.setTextSize(60);
+            c.drawText("Tap the screen to begin", 100, 400, p);
+        }
+    }
 
 
     class GameSong {
@@ -481,7 +538,8 @@ public class GameTimeline extends Entity {
             int actualIndex;
             actualIndex = (int)Math.floor(timeCursor); // *** We only care about the WHOLE number
             //
-            if (actualIndex >= timeBars.size()) return TimeBar.BT_NONE;
+            if (actualIndex < 0) return TimeBar.BT_NONE;
+            else if (actualIndex >= timeBars.size()) return TimeBar.BT_NONE;
             //
             TimeBar tb = timeBars.get(actualIndex);
             //

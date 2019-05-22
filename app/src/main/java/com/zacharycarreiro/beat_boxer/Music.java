@@ -14,6 +14,8 @@ import java.io.IOException;
 public class Music {
     int music;
     String name;
+    //
+    int walkmanned = 0;
 
 
     // *** Resourcer information

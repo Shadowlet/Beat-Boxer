@@ -12,6 +12,8 @@ public class DisplayableActor extends Actor {
     //
     float frame_speed = 1.0f;
 
+    boolean onScreen = false;
+
 
 
     protected DisplayableActor() { super(); }
@@ -38,6 +40,6 @@ public class DisplayableActor extends Actor {
         super.Draw(c, p);
 
 
-        Artist.drawBitmap(sprite, image_frame, x, y, image_xscale, image_yscale, image_rotate);
+        Artist.drawBitmap(sprite, image_frame, x, y, image_xscale, image_yscale, image_rotate, onScreen);
     }
 }

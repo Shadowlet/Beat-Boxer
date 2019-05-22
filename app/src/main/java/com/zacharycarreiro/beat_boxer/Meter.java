@@ -30,6 +30,8 @@ public class Meter extends DisplayableActor{
 
     Meter() {
         super("meter");
+
+        onScreen = true;
     }
 
 
@@ -49,6 +51,12 @@ public class Meter extends DisplayableActor{
         */
 
         //Helper.DebugMessage("" + meterValue);
+
+        x = Artist.screenWidth * 0.2f;
+        y = 64 * 13.5f;
+        //
+        myArrow.x = Artist.screenWidth * 0.2f   + visualValue* (sprite.GetWidth()/2);
+        myArrow.y = y - 64 * 1;
     }
 
     @Override
@@ -59,10 +67,6 @@ public class Meter extends DisplayableActor{
     }
 
     public void updateMeter(){
-        x = Artist.screenWidth * 0.2f;
-        y = 64 * 13.5f;
-
-
         GameTimeline gt = GameTimeline.CreateInstance();
 
         float swingPercent = (1 - gt.TimeRemainingUntilBeat() / (float)gt.TimeBetweenNextBeat());
@@ -76,10 +80,6 @@ public class Meter extends DisplayableActor{
 
 
                 // meterValue = (float)Math.sin(gah /(swingValue *(1/(swingPercent/100))));
-
-
-        myArrow.x = Artist.screenWidth * 0.2f   + visualValue* (sprite.GetWidth()/2);
-        myArrow.y = y - 64 * 1;
     }
 
 

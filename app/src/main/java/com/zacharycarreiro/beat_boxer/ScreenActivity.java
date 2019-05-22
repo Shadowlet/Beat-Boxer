@@ -89,6 +89,8 @@ public class ScreenActivity extends Activity {
             gm.Initialize();
             //
             gm.Setup((Activity)context);
+
+            Artist.viewport.width = 1000;
         }
 
         @Override

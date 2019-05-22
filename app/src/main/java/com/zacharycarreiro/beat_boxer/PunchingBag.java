@@ -61,11 +61,35 @@ public class PunchingBag extends DisplayableActor {
         }
 
 
-        if (gtl.isDucking) {
-            myGuy.image_yscale = -1;
+        if (gtl.isPlaying) {
+            if (gtl.isDucking) {
+                myGuy.SetAnim("duck");
+            }
+            else {
+                if (gtl.TimePassedSinceStarted()-gtl.strikeTime < 300) {
+                    switch (gtl.lastResult) {
+                        case Meter.HITRESULT_MISS:
+                        case Meter.HITRESULT_DODGE:
+                            myGuy.SetAnim("duck");
+                            break;
+
+                        case Meter.HITRESULT_FAST:
+                        case Meter.HITRESULT_SLOW:
+                        case Meter.HITRESULT_PERFECT:
+                            myGuy.SetAnim("punch");
+                            break;
+
+                        default:
+                            myGuy.SetAnim("ready");
+                    }
+                }
+                else {
+                    myGuy.SetAnim("ready");
+                }
+            }
         }
         else {
-            myGuy.image_yscale = 1;
+            myGuy.SetAnim("idle");
         }
     }
 }

@@ -2,6 +2,7 @@ package com.zacharycarreiro.beat_boxer;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -28,6 +29,7 @@ public class Artist {
 
 
     public static boolean isInit = false;
+    public static boolean isSetup = false;
 
     public static Point displaySize = new Point();
     public static Display d = null;
@@ -51,6 +53,8 @@ public class Artist {
     public static void Setup(Canvas canvas, Paint paint) {
         c = canvas;
         p = paint;
+
+        isSetup = true;
     }
 
 
@@ -101,11 +105,18 @@ public class Artist {
 
 
 
+    public static void SetColor(int col) {
+        if (!isSetup) return;
+
+        p.setColor(col);
+    }
+
     public static void drawRect(float x1, float y1, float x2, float y2) {
         drawRect((int)x1, (int)y1, (int)x2, (int)y2);
     }
     public static void drawRect(int x1, int y1, int x2, int y2) {
         if (!isInit) return;
+        if (!isSetup) return;
 
 
         c.drawRect(offsetX+ x1 /ratioWidth, offsetY+ y1 /ratioHeight, offsetX+ x2 /ratioWidth, offsetY+ y2 /ratioHeight, p);
@@ -128,10 +139,14 @@ public class Artist {
     public static void drawBitmap(String bitmap, float currentFrame, float x, float y, float sclx, float scly, float rot) {
         drawBitmap(Resourcer.allBitmaps.get(bitmap), currentFrame, x, y, sclx, scly, rot);
     }
-    // *** This is the most "preferred" method to use.
     public static void drawBitmap(Sprite image, float currentFrame, float x, float y, float sclx, float scly, float rot) {
+        drawBitmap(image, currentFrame, x, y, sclx, scly, rot, false);
+    }
+    // *** This is the most "preferred" method to use.
+    public static void drawBitmap(Sprite image, float currentFrame, float x, float y, float sclx, float scly, float rot, boolean screenRelative) {
+        if (!isSetup) return;
 
-        currentFrame = Math.round(currentFrame % image.frameCount);
+        currentFrame = Math.round(currentFrame % image.frameCount) % image.frameCount;
 
         /*
         Matrix m = new Matrix();
@@ -146,13 +161,21 @@ public class Artist {
 
 
         float mn = dm.density; // *** The display density... Don't ask me.
+        int xoff = -viewport.left;
+        int yoff = -viewport.top;
         float wzoom = viewport.GetWZoom();
         float hzoom = viewport.GetHZoom();
+        if (screenRelative) {
+            xoff = 0;
+            yoff = 0;
+            wzoom = 1;
+            hzoom = 1;
+        }
 
         c.save();
         //
         //
-        c.translate(-viewport.left + x /wzoom, -viewport.top + y /hzoom); // *** Translate
+        c.translate(xoff + x /wzoom, yoff + y /hzoom); // *** Translate
         //
         c.translate(-image.offsetX *sclx /wzoom, -image.offsetY *scly /hzoom); // Orientation...?
         //
