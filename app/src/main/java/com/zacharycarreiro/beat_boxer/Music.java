@@ -23,6 +23,7 @@ public class Music {
     int barCount;
     int _tempo;
     int beatDensity;
+    String title;
     //
     long fileSize;
     //
@@ -61,9 +62,9 @@ public class Music {
         sampleRate = mf.getInteger(MediaFormat.KEY_SAMPLE_RATE);
         duration = mf.getLong(MediaFormat.KEY_DURATION);
         //
-        // frameCount = sampleRate *(duration / 1000000); // Convert it into Seconds to determine the amount of samples!
+        frameCount = (long)(sampleRate *(duration / 1000000f)); // Convert it into Seconds to determine the amount of samples!
         // *** I'm assuming everything has two channels (Stereo) and works by 2 bits per sample
-        frameCount = (fileSize - 44) / (2 * 2);
+        // frameCount = (fileSize - 44) / (2 * 2);
         //
         //
         Log.d("OH!", ""+fileSize);

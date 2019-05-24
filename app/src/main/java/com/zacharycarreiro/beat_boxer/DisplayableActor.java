@@ -13,6 +13,15 @@ public class DisplayableActor extends Actor {
     float frame_speed = 1.0f;
 
     boolean onScreen = false;
+    boolean visible = true;
+
+
+
+
+
+    public final int LOOPMODE_REPEAT = 0;
+    public final int LOOPMODE_STOP = 1;
+    public int loopingMode = LOOPMODE_REPEAT;
 
 
 
@@ -29,7 +38,14 @@ public class DisplayableActor extends Actor {
         super.Process();
 
 
-        image_frame = ((image_frame +frame_speed) +sprite.frameCount) % sprite.frameCount;
+        switch (loopingMode) {
+            case LOOPMODE_REPEAT:
+                image_frame = ((image_frame +frame_speed) +sprite.frameCount) % sprite.frameCount;
+                break;
+            case LOOPMODE_STOP:
+                image_frame = Math.max(0, Math.min((image_frame +frame_speed), sprite.frameCount-1));
+                break;
+        }
         image_rotate = (image_rotate +360) % 360;
     }
 
@@ -40,6 +56,8 @@ public class DisplayableActor extends Actor {
         super.Draw(c, p);
 
 
-        Artist.drawBitmap(sprite, image_frame, x, y, image_xscale, image_yscale, image_rotate, onScreen);
+        if (visible) {
+            Artist.drawBitmap(sprite, image_frame, x, y, image_xscale, image_yscale, image_rotate, onScreen);
+        }
     }
 }

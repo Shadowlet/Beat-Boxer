@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import java.util.ArrayList;
+
 public class GameManager {
 
     private static GameManager _instance = null;
@@ -24,34 +26,29 @@ public class GameManager {
 
     public Meter obj_meter;
 
+    Menu_Title mainMenu;
+    Holder_PunchMode punchMode;
     GameTimeline gameplayTimeline;
 
     public void Initialize() {
-        // *** Entities, doesn't update/draw automatically
-        gameplayTimeline = GameTimeline.CreateInstance();
-
-
-        // *** Actors
-        // new TestingGuy("gggg");
-        Meter m = new Meter();
-        m.myArrow = new Arrow();
-
-
-        PunchingGuy g = new PunchingGuy();
-        PunchingBag p = new PunchingBag();
-        p.myGuy = g;
-        p.myMeter = m;
-
-        // -------------------------------------------------------------
-        // [Game Manager Stuff]
-        obj_meter = m;
+        mainMenu = new Menu_Title();
     }
 
     public void Update() {
-        gameplayTimeline.Update();
+        if (punchMode != null) {
+            punchMode.Update();
+        }
+        //
+        if (gameplayTimeline != null) {
+            gameplayTimeline.Update();
+        }
         //
         //
-        for (Actor a : Actor.actorList) {
+
+        Object[] list = Actor.actorList.toArray();
+        for (Object o : list) {
+            Actor a = (Actor)o;
+
             a.Process();
             //
             a.Update();
@@ -62,36 +59,40 @@ public class GameManager {
     }
 
     public void Draw(Canvas c, Paint p) {
-        c.drawColor(Color.argb(255, 0, 0, 0));//the background
-        //
-        //
-        Artist.drawBitmap("grid2", 0, 0, 0, 1f, 1f, 0);
-        //
-        //
-        p.setColor(Color.argb(255,180,180,180));
-        Artist.drawRect(0, 0, Artist.screenWidth, Artist.screenHeight/3);
-        Artist.drawRect(0, Artist.screenHeight - Artist.screenHeight/3, Artist.screenWidth, Artist.screenHeight);
-        //
-        p.setColor(Color.argb(255,0,0,0));
-        Artist.drawRect(0, 0, Artist.screenWidth, Artist.screenHeight/7);
-        Artist.drawRect(0, Artist.screenHeight - Artist.screenHeight/7, Artist.screenWidth, Artist.screenHeight);
-        //
-        for (Actor a : Actor.actorList) {
+        if (punchMode != null) {
+            punchMode.Draw(c, p);
+        }
+
+
+        Object[] list = Actor.actorList.toArray();
+        for (Object o : list) {
+            Actor a = (Actor)o;
+
             a.Draw(c, p);
         }
 
 
-
-        p.setColor(Color.argb(255,0,255,255));
-        //Artist.drawRect(Artist.screenWidth * 0.5f, Artist.screenHeight * 0.8f, Artist.screenWidth * 0.5f +10, Artist.screenHeight * 0.8f +10);
-
-
-        gameplayTimeline.Draw(c, p);
+        //
+        if (gameplayTimeline != null) {
+            gameplayTimeline.Draw(c, p);
+        }
     }
 
     public void Setup(Activity a) {
         activity = a;
+    }
+
+    public void Begin_PunchMode() {
+        mainMenu.Despawn();
         //
-        gameplayTimeline.Initialize();
+        punchMode = new Holder_PunchMode();
+    }
+
+    public void CollectGarbage() {
+        for (Actor a : Actor.removeList) {
+            a._Unregister();
+        }
+        //
+        Actor.removeList.clear();
     }
 }

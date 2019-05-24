@@ -18,6 +18,11 @@ public class PunchingBag extends DisplayableActor {
         y = 0;
 
         image_rotate = 0;
+
+
+
+        x = Artist.screenWidth *0.75f;
+        y = Artist.screenHeight/6 +64;
     }
 
 
@@ -40,13 +45,6 @@ public class PunchingBag extends DisplayableActor {
     }
 
     public void updateMeter(){
-        x = Artist.screenWidth *0.75f;
-        y = Artist.screenHeight/6 +64;
-
-
-        myGuy.x = x - 64 * 5;
-        myGuy.y = y + 64 * 9;
-
 
         GameTimeline gtl = GameTimeline.CreateInstance();
 
@@ -61,7 +59,24 @@ public class PunchingBag extends DisplayableActor {
         }
 
 
-        if (gtl.isPlaying) {
+        if (gtl.isDead) {
+            myGuy.loopingMode = LOOPMODE_STOP;
+            myGuy.SetAnim("fly");
+            myGuy.frame_speed = 12/Helper.SECOND;
+
+            myGuy.x -= 100/Helper.SECOND;
+            myGuy.y -= 30/Helper.SECOND;
+            myGuy.image_rotate += 120/Helper.SECOND;
+        }
+        else if (gtl.isFinished) {
+            myGuy.loopingMode = LOOPMODE_STOP;
+            myGuy.SetAnim("victory");
+            myGuy.frame_speed = 12/Helper.SECOND;
+        }
+        else if (gtl.isPlaying) {
+            myGuy.loopingMode = LOOPMODE_STOP;
+            myGuy.frame_speed = 31/Helper.SECOND;
+
             if (gtl.isDucking) {
                 myGuy.SetAnim("duck");
             }
@@ -80,16 +95,20 @@ public class PunchingBag extends DisplayableActor {
                             break;
 
                         default:
+                            myGuy.loopingMode = LOOPMODE_REPEAT;
                             myGuy.SetAnim("ready");
                     }
                 }
                 else {
+                    myGuy.loopingMode = LOOPMODE_REPEAT;
                     myGuy.SetAnim("ready");
                 }
             }
         }
         else {
+            myGuy.loopingMode = LOOPMODE_REPEAT;
             myGuy.SetAnim("idle");
+            myGuy.frame_speed = 12/Helper.SECOND;
         }
     }
 }

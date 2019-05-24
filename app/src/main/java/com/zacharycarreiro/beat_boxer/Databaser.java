@@ -33,31 +33,32 @@ public class Databaser {
 
         // *** "Emphasis"
         gameRaws_BeatMaps.put("emphasis", "____\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B_B_\n" +
-                "B___\n");
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B_B_\n" +
+            "B___\n");
+
 
         // *** "C_HC"
         gameRaws_BeatMaps.put("c_hc", "____\n" +
@@ -124,7 +125,6 @@ public class Databaser {
                 "E_E___E___E_____\n" +
                 "E_____E_________\n" +
                 "E_E___E___E_____\n");
-
 
         // blah = blah.replaceAll("\\s","");
     }

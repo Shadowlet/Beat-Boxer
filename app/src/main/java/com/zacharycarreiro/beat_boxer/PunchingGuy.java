@@ -15,12 +15,16 @@ public class PunchingGuy extends AnimatedActor {
         super("punchingGuy");
 
 
-        // RegisterAnim("idle", "lukas_idle");
-        // RegisterAnim("ready", "lukas_ready");
-        // RegisterAnim("punch", "lukas_punch");
-        // RegisterAnim("duck", "lukas_duck");
+        RegisterAnim("idle", "lukas_idle");
+        RegisterAnim("ready", "lukas_ready");
+        RegisterAnim("punch", "lukas_punch");
+        RegisterAnim("duck", "lukas_duck");
+        RegisterAnim("fly", "lukas_fly");
+        RegisterAnim("victory", "lukas_victory");
 
-        frame_speed = 5/Helper.SECOND;
+        frame_speed = 12/Helper.SECOND;
+        image_xscale = 2.5f;
+        image_yscale = 2.5f;
     }
 
 

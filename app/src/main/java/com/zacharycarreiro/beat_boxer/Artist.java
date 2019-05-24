@@ -105,6 +105,11 @@ public class Artist {
 
 
 
+
+    private static Rect srcRect = new Rect();
+    private static Rect destRect = new Rect();
+
+
     public static void SetColor(int col) {
         if (!isSetup) return;
 
@@ -137,7 +142,10 @@ public class Artist {
     }
     */
     public static void drawBitmap(String bitmap, float currentFrame, float x, float y, float sclx, float scly, float rot) {
-        drawBitmap(Resourcer.allBitmaps.get(bitmap), currentFrame, x, y, sclx, scly, rot);
+        drawBitmap(Resourcer.allBitmaps.get(bitmap), currentFrame, x, y, sclx, scly, rot, false);
+    }
+    public static void drawBitmap(String bitmap, float currentFrame, float x, float y, float sclx, float scly, float rot, boolean onScreen) {
+        drawBitmap(Resourcer.allBitmaps.get(bitmap), currentFrame, x, y, sclx, scly, rot, onScreen);
     }
     public static void drawBitmap(Sprite image, float currentFrame, float x, float y, float sclx, float scly, float rot) {
         drawBitmap(image, currentFrame, x, y, sclx, scly, rot, false);
@@ -188,16 +196,20 @@ public class Artist {
         int tx, ty;
         tx = (int) (image.frameWidth*mn * (currentFrame % image.frameAcross));
         ty = (int) (image.frameHeight*mn * (Math.floor(currentFrame / image.frameAcross)));
+        //
+        srcRect.left = 0 + tx;
+        srcRect.top = 0 + ty;
+        srcRect.right = 0 + tx + (int)(image.frameWidth*mn);
+        srcRect.bottom = 0 + ty + (int)(image.frameHeight*mn);
 
-        /*
-        Log.d("Artist", "Frame data...");
-        Log.d("Artist", ""+image.frameWidth);
-        Log.d("Artist", ""+image.frameHeight);
-        */
-
+        destRect.left = 0;
+        destRect.top = 0;
+        destRect.right = (int)(image.frameWidth);
+        destRect.bottom = (int)(image.frameHeight);
+        //
         c.drawBitmap(image.bitmap,
-                new Rect(0 + tx,0 + ty, 0 + tx + (int)(image.frameWidth*mn), 0 + ty + (int)(image.frameHeight*mn)),
-                new Rect(0, 0, (int)(image.frameWidth), (int)(image.frameHeight)),
+                srcRect,
+                destRect,
                 p);
         //
         //

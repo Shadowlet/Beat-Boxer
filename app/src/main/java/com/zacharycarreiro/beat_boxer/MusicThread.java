@@ -144,56 +144,5 @@ class MusicThread extends Thread {
         Log.e("THREAD", "555555555555555");
         //
         return;
-
-        /*
-        try {
-            music = new byte[512];
-            //
-            at.play();
-            //
-            while((i = is.read(music)) != -1) {
-                if (isInterrupted()) {
-                    break;
-                }
-                //
-                at.write(music, 0, i);
-                //
-                Log.e("Musicing", ""+i);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-
-        /*
-        try {
-            music = new byte[1024];
-            //
-            do {
-                i = is.read(music);
-                //
-                at.write(music, 0, i);
-
-                Log.e("Musicing", ""+i);
-            } while(i != -1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        at.play();
-        //
-        Log.e("THREAD", "2222222");
-
-        // at.stop();
-        Log.e("THREAD", "3333333333");
-        // at.release();
-        Log.e("THREAD", "44444444444");
-
-
-
-        s_instance = null;
-        return;
-        */
     }
 }

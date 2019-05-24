@@ -78,7 +78,7 @@ public class ScreenActivity extends Activity {
             Resourcer.Setup(getResources());
 
 
-            Artist.SetScreenSize(1800, 1080);
+            // Artist.SetScreenSize(1800, 1080);
             // Artist.SetScreenSize(100, 100);
             // Artist.SetScreenSize(32);
 
@@ -89,8 +89,6 @@ public class ScreenActivity extends Activity {
             gm.Initialize();
             //
             gm.Setup((Activity)context);
-
-            Artist.viewport.width = 1000;
         }
 
         @Override
@@ -107,6 +105,8 @@ public class ScreenActivity extends Activity {
 
         public void Update() {
             gm.Update();
+            //
+            gm.CollectGarbage();
         }
 
         private void _Draw() {

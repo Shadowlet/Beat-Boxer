@@ -21,8 +21,7 @@ public class Meter extends DisplayableActor{
     float initialMeter = 0.0f;
     float visualValue = 0.0f;
 
-    float swingValue = 10f;
-    float swingPercent = 100f;
+
     float leeway = 0.5f;
     float evenBetter = 0.1f;
     float sweetspot = 0;
@@ -63,7 +62,7 @@ public class Meter extends DisplayableActor{
     public void Draw(Canvas c, Paint p) {
         super.Draw(c, p);
 
-
+        // ??? <-- Display "too fast" or "too slow", etc...
     }
 
     public void updateMeter(){
@@ -89,6 +88,7 @@ public class Meter extends DisplayableActor{
     public static final int HITRESULT_SLOW = 2;
     public static final int HITRESULT_MISS = 3;
     public static final int HITRESULT_DODGE = 4;
+    public static final int HITRESULT__NUMBER = 5;
 
     public int PunchBag(){
         float difference;

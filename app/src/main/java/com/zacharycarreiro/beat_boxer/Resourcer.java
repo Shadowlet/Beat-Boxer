@@ -33,6 +33,18 @@ public class Resourcer {
         toLoadBitmaps.put("lukas_idle", R.drawable.lukas_idle);
         toLoadBitmaps.put("lukas_punch", R.drawable.lukas_punch);
         toLoadBitmaps.put("lukas_ready", R.drawable.lukas_ready);
+        toLoadBitmaps.put("lukas_fly", R.drawable.lukas_fly);
+        toLoadBitmaps.put("lukas_victory", R.drawable.lukas_victory);
+
+        toLoadBitmaps.put("button_controls", R.drawable.button_controls);
+        toLoadBitmaps.put("button_exit", R.drawable.button_exit);
+        toLoadBitmaps.put("button_play", R.drawable.button_play);
+
+        toLoadBitmaps.put("title_backdrop", R.drawable.title_page_scale); // title_page
+
+        toLoadBitmaps.put("scene_treadmill", R.drawable.scene_threadmill);
+        toLoadBitmaps.put("scene_weightlift", R.drawable.scene_weightlift);
+        toLoadBitmaps.put("scene_weightrack", R.drawable.scene_weightrack);
 
         
         toLoadMusics.put("test", R.raw.test);
@@ -147,20 +159,46 @@ public class Resourcer {
         Q.offsetY = Q.GetHeight();
 
         Q = allBitmaps.get("lukas_punch");
+        Q.frameCount = 5;
+        Q.frameAcross = 5;
+        Q.frameWidth = Q.GetWidth()/5;
         Q.Centralize();
-        Q.offsetY = Q.GetHeight();
+        Q.offsetX = 0;
+        Q.offsetY = Q.GetHeight()-32;
         Q = allBitmaps.get("lukas_duck");
+        Q.frameCount = 5;
+        Q.frameAcross = 5;
+        Q.frameWidth = Q.GetWidth()/5;
         Q.Centralize();
-        Q.offsetY = Q.GetHeight();
+        Q.offsetX = 0;
+        Q.offsetY = Q.GetHeight()-32;
         Q = allBitmaps.get("lukas_ready");
         Q.Centralize();
-        Q.offsetY = Q.GetHeight();
+        Q.offsetX = 0;
+        Q.offsetY = Q.GetHeight()-32;
         Q = allBitmaps.get("lukas_idle");
-        Q.frameCount = 2;
-        Q.frameAcross = 2;
-        Q.frameWidth = Q.GetWidth()/2;
+        Q.frameCount = 4;
+        Q.frameAcross = 4;
+        Q.frameWidth = Q.GetWidth()/4;
         Q.Centralize();
-        Q.offsetY = Q.GetHeight();
+        Q.offsetX = 0;
+        Q.offsetY = Q.GetHeight()-32;
+        Q = allBitmaps.get("lukas_fly");
+        Q.Centralize();
+        Q.offsetX = 0;
+        Q.offsetY = Q.GetHeight()-32;
+        Q = allBitmaps.get("lukas_victory");
+        Q.Centralize();
+        Q.offsetX = 0;
+        Q.offsetY = Q.GetHeight()-32;
+
+
+        Q = allBitmaps.get("scene_treadmill");
+        Q.Centralize();
+        Q = allBitmaps.get("scene_weightlift");
+        Q.Centralize();
+        Q = allBitmaps.get("scene_weightrack");
+        Q.Centralize();
 
 
         Music P;
@@ -176,6 +214,7 @@ public class Resourcer {
         P._tempo = 140;
         P.beatDensity = 4;
         P.preDelay = 250;
+        P.title = "Catch: Emphasis";
 
 
         P = allMusics.get("c_hc");
@@ -185,6 +224,7 @@ public class Resourcer {
         P.beatDensity = 16;
         P.preDelay = 250;
         P.walkmanned = R.raw.c_hc_walkman;
+        P.title = "C_HC (clap)";
     }
 }
 

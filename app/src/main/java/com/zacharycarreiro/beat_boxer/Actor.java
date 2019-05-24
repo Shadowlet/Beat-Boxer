@@ -5,6 +5,8 @@ import java.util.ArrayList;
 public class Actor extends Entity {
 
     public static ArrayList<Actor> actorList = new ArrayList<>();
+    public static ArrayList<Actor> removeList = new ArrayList<>();
+
 
 
     public float x = 0;
@@ -26,7 +28,7 @@ public class Actor extends Entity {
 
         //
         //
-        _Unregister();
+        _LateUnregister();
         //
         Discard();
     }
@@ -36,6 +38,11 @@ public class Actor extends Entity {
     }
     public void _Unregister() {
         actorList.remove(this);
+    }
+    public void _LateUnregister() {
+        if (!removeList.contains(this)) {
+            removeList.add(this);
+        }
     }
 
 
