@@ -20,8 +20,6 @@ public class Artist {
     public static int screenHeight = 0;
     public static float ratioWidth = 1.0f;
     public static float ratioHeight = 1.0f;
-    public static int offsetX = 0;
-    public static int offsetY = 0;
     public static boolean retainRatio = false;
 
     public static Viewport viewport;
@@ -74,32 +72,9 @@ public class Artist {
         ratioWidth = screenWidth / (float)displaySize.x;
         ratioHeight = screenHeight / (float)displaySize.y;
         //
-        offsetX = 0;
-        offsetY = 0;
-        //
         if (retainRatio) {
             ratioWidth = 1;
             ratioHeight = 1;
-            //
-            offsetX = (displaySize.x - screenWidth)/2;
-            offsetY = (displaySize.y - screenHeight)/2;
-
-
-            /*
-            float lesser = Math.min(ratioWidth, ratioHeight);
-            ratioWidth = lesser;
-            ratioHeight = lesser;
-            //
-            int xx, yy;
-            xx = (int)(displaySize.x * ratioWidth);
-            yy = (int)(displaySize.y * ratioHeight);
-
-            offsetX = (screenWidth - xx)/2;
-            offsetY = (screenHeight - yy)/2;
-            //
-            screenWidth = xx;
-            screenHeight = yy;
-            */
         }
     }
 
@@ -120,11 +95,26 @@ public class Artist {
         drawRect((int)x1, (int)y1, (int)x2, (int)y2);
     }
     public static void drawRect(int x1, int y1, int x2, int y2) {
+        drawRect(x1, y1, x2, y2, false);
+    }
+    public static void drawRect(int x1, int y1, int x2, int y2, boolean screenRelative) {
         if (!isInit) return;
         if (!isSetup) return;
 
 
-        c.drawRect(offsetX+ x1 /ratioWidth, offsetY+ y1 /ratioHeight, offsetX+ x2 /ratioWidth, offsetY+ y2 /ratioHeight, p);
+
+        int xoff = -viewport.left;
+        int yoff = -viewport.top;
+        float wzoom = viewport.GetWZoom();
+        float hzoom = viewport.GetHZoom();
+        if (screenRelative) {
+            xoff = 0;
+            yoff = 0;
+            wzoom = 1;
+            hzoom = 1;
+        }
+
+        c.drawRect(xoff+ x1/wzoom, yoff+ y1/hzoom, xoff+ x2/wzoom, yoff+ y2/hzoom, p);
     }
 
     /*

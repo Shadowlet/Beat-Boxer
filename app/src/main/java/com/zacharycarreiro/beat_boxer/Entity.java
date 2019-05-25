@@ -22,9 +22,10 @@ public class Entity {
 
 
 
-
+    public boolean _isDiscarded = false;
     public void Discard() {
         // Remove from memory
+        _isDiscarded = true;
     }
 
 }

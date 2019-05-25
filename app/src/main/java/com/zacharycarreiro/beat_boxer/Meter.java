@@ -14,16 +14,13 @@ public class Meter extends DisplayableActor{
     Arrow myArrow;
 
 
-    Rect punchTouchArea = new Rect(Artist.screenWidth/2, 0, Artist.screenWidth, Artist.screenHeight);
-    Rect duckTouchArea = new Rect(0, 0, Artist.screenWidth/2, Artist.screenHeight);
-
     float meterValue;
     float initialMeter = 0.0f;
     float visualValue = 0.0f;
 
 
-    float leeway = 0.5f;
-    float evenBetter = 0.1f;
+    float leeway = 0.35f;
+    float evenBetter = 0.15f;
     float sweetspot = 0;
 
 
@@ -33,23 +30,20 @@ public class Meter extends DisplayableActor{
         onScreen = true;
     }
 
+    @Override
+    public void Discard() {
+        super.Discard();
+
+
+        myArrow.Discard();
+        myArrow = null;
+    }
+
 
     @Override
     public void Update() {
         super.Update();
 
-        /*
-        if (Inputter.check(MotionEvent.ACTION_DOWN, punchTouchArea)){
-            PunchBag();
-            Log.d("STATE", "Punching");
-        }
-        else if(Inputter.check(MotionEvent.ACTION_DOWN, duckTouchArea)){
-            Duck();
-            Log.d("STATE", "Ducking");
-        }
-        */
-
-        //Helper.DebugMessage("" + meterValue);
 
         x = Artist.screenWidth * 0.2f;
         y = 64 * 13.5f;
@@ -69,16 +63,11 @@ public class Meter extends DisplayableActor{
         GameTimeline gt = GameTimeline.CreateInstance();
 
         float swingPercent = (1 - gt.TimeRemainingUntilBeat() / (float)gt.TimeBetweenNextBeat());
-        // Helper.DebugMessage(""+swingPercent);
-        // Helper.DebugMessage(""+meterValue);
         //
         meterValue = (float)Math.sin((Math.PI) * swingPercent); // *1.10
         //
         visualValue = initialMeter + (1-initialMeter) * swingPercent;
         visualValue = (float)Math.sin((Math.PI) *visualValue);
-
-
-                // meterValue = (float)Math.sin(gah /(swingValue *(1/(swingPercent/100))));
     }
 
 

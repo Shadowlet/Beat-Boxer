@@ -14,9 +14,6 @@ import java.util.Random;
 
 public class GameTimeline extends Entity {
 
-
-    final static int BEATCOUNT = 16;
-
     private static GameTimeline _instance = null;
     public static GameTimeline CreateInstance() {
         if (_instance == null) {
@@ -26,13 +23,11 @@ public class GameTimeline extends Entity {
         return _instance;
     }
 
-    private GameTimeline() {
-        Initialize();
-    }
+    private GameTimeline() {}
 
     ArrayList<GameSong> gameSongs = new ArrayList<>();
 
-    MediaPlayer mp;
+
 
 
     ButtonArea returnButton;
@@ -41,35 +36,22 @@ public class GameTimeline extends Entity {
 
         GameSong Q;
         //
-        Q = new GameSong(Resourcer.allMusics.get("emphasis"));
-        gameSongs.add(Q);
-
-
-        Q = new GameSong(Resourcer.allMusics.get("c_hc"));
-        gameSongs.add(Q);
-
-
-
-        Construct(1);
-
-
-        if (currentSong.music.walkmanned != 0) {
-            mp = MediaPlayer.create(GameManager.CreateInstance().activity, currentSong.music.walkmanned);
-            //
-            // mp.seekTo(mp.getDuration()/32);
-            mp.setVolume(0.3f, 0.3f);
-            mp.setLooping(true);
-            mp.seekTo(3000); // *** He's always 3 seconds into the song!
-            //
-            mp.start();
+        Databaser db = Databaser.CreateInstance();
+        for (int i = 0; i < db.GamePlaylist.length; i++)
+        {
+            Q = new GameSong(Resourcer.allMusics.get(db.GamePlaylist[i]));
+            gameSongs.add(Q);
         }
 
 
 
-        returnButton = new ButtonArea("button_exit", new Rect(0+632,Artist.screenHeight-200-32, (0+632)+300, (Artist.screenHeight-200-32)+200), new Runnable() {
+        returnButton = new ButtonArea("button_exit", new Rect(Artist.screenWidth-32 -300,Artist.screenHeight-200-32, Artist.screenWidth-32, (Artist.screenHeight-200-32)+160), new Runnable() {
             @Override
             public void run() {
-                Log.e("AFSDS", "RESETTTTTTTT");
+                if (!isExiting) {
+                    isExiting = true;
+                    exitTime = SystemClock.uptimeMillis();
+                }
             }
         });
         returnButton.visible = false;
@@ -83,26 +65,20 @@ public class GameTimeline extends Entity {
 
     // *** Creates/loads the beat algorithm that is used for playing the game
     public void Construct(int levelID) {
-        switch (levelID) {
-            case 1:
-                currentSong = gameSongs.get(0); // *** The test song
-                break;
-            case 2:
-
-                currentSong = gameSongs.get(1); // *** Clap (the hard one)
-                break;
-
-
-            default:
-                // *** Do nothing.
-                currentSong = null;
-                break;
-        }
-
-
+        currentSong = gameSongs.get(levelID);
+        //
+        //
         currentSong.Prepare();
         //
-        Log.e("Current Song", ""+currentSong.music.name);
+        Log.e("Current Song", ""+currentSong.music.title + " ("+currentSong.music.name+")");
+
+
+        if (currentSong.music.walkmanned != 0) {
+            Sounder.Music_Play(currentSong.music.walkmanned, 3000);
+        }
+        else {
+            Sounder.Music_Play(R.raw.specialaffects_walkman, 3000);
+        }
     }
 
 
@@ -117,12 +93,15 @@ public class GameTimeline extends Entity {
 
     public long timeStarted;
     public long timeFinished;
+    public long exitTime;
 
 
 
     public boolean isPlaying = false;
     public boolean isFinished = false;
     public boolean isDead = false;
+    public boolean isExiting = false;
+
 
     public Runnable ThreadCallback = new Runnable() {
         public void run() {
@@ -146,10 +125,7 @@ public class GameTimeline extends Entity {
 
     // *** Begin the game/timeline
     public void Play() {
-
-        if (mp != null) {
-            mp.stop();
-        }
+        Sounder.Music_Stop();
 
 
         lastCursor = -1;
@@ -164,13 +140,13 @@ public class GameTimeline extends Entity {
         Log.e("PLAYING", ""+blah);
         blah /= currentMusic.barCount; // *** Get length of ONE bar
         Log.e("PLAYING", ""+blah);
-        blah /= BEATCOUNT; // *** Turn into length of one BEAT
+        blah /= GameSong.BEATCOUNT; // *** Turn into length of one BEAT
         Log.e("PLAYING", ""+blah);
 
         durationOfOneBeat = blah;
         Log.e("PLAYING", ""+durationOfOneBeat);
         //
-        durationOfOneBar = durationOfOneBeat *BEATCOUNT;
+        durationOfOneBar = durationOfOneBeat *GameSong.BEATCOUNT;
         //
         //
         if (currentSong.thread.isAlive()) {
@@ -188,6 +164,8 @@ public class GameTimeline extends Entity {
     public void Stop() {
         // isPlaying = false;
 
+        currentSong.thread.interrupt();
+
         isFinished = true;
         timeFinished = SystemClock.uptimeMillis();
 
@@ -196,19 +174,14 @@ public class GameTimeline extends Entity {
 
         if (!isDead) {
             if (currentSong.music.walkmanned != 0) {
-                mp = MediaPlayer.create(GameManager.CreateInstance().activity, currentSong.music.walkmanned);
-                //
-                // mp.seekTo(mp.getDuration()/32);
-                mp.setVolume(0.3f, 0.3f);
-                mp.setLooping(true);
-                mp.seekTo(3000); // *** He's always 3 seconds into the song!
-                //
-                mp.start();
+                Sounder.Music_Play(currentSong.music.walkmanned, 3000);
+            }
+            else {
+                Sounder.Music_Play(R.raw.specialaffects_walkman, 3000);
             }
         }
 
         Log.e("BEAT", "... Song has ended");
-
     }
     public float SongCursor() {
         return ConvertTimeToCursor(TimePassedSinceStarted());
@@ -240,7 +213,7 @@ public class GameTimeline extends Entity {
 
         float cursorBar = (float) Math.floor(currentCursor);
         //
-        float cursorBeat = (float) Math.floor((currentCursor - cursorBar) * BEATCOUNT);
+        float cursorBeat = (float) Math.floor((currentCursor - cursorBar) * GameSong.BEATCOUNT);
         for (int n = 0; n < currentSong.timeBars.size(); n++) {
             if (n < Math.floor(currentCursor)) continue;
 
@@ -260,7 +233,7 @@ public class GameTimeline extends Entity {
                 }
 
 
-                float newCursor = n + (m / ((float) BEATCOUNT));
+                float newCursor = n + (m / ((float) GameSong.BEATCOUNT));
 
                 if (currentSong.GetBeat(newCursor) != TimeBar.BT_NONE) {
                     tempMoment = newCursor;
@@ -326,7 +299,8 @@ public class GameTimeline extends Entity {
 
         lastBeatMoment = beatMoment;
         //
-        if (isDucking) {
+        isDucking = false;
+        if (isDucking && false) {
             isDucking = false;
         }
         else {
@@ -334,24 +308,36 @@ public class GameTimeline extends Entity {
             if (hitResult == Meter.HITRESULT_MISS) {
                 if (beatType == TimeBar.BT_EASY) {
                     // *** No penalty!
+
+                    Sounder.Sound_Play("beat_dodge");
                 }
                 else if (beatType == TimeBar.BT_HARD) {
                     // *** Unacceptable; You die.
                     isDead = true;
+                    Sounder.Sound_Play("lukas_dead");
                     //
                     Stop();
+
+
+                    Sounder.Sound_Play("beat_hard_miss");
                 }
                 else {
                     meter.Duck();
                     isDucking = true;
+
+                    Sounder.Sound_Play("beat_dodge");
                 }
             } else if (hitResult == Meter.HITRESULT_DODGE) {
                 meter.Duck();
                 isDucking = true;
+
+                Sounder.Sound_Play("beat_dodge");
             } else {
                 if (beatType == TimeBar.BT_EASY) {
                     // "Easy" beats give the same result, as long as you hit
                     ScreenTremble(0.05f, 50);
+
+                    Sounder.Sound_Play("beat_easy");
                 }
                 else {
                     // *** "Hard" beats require PERFECT timing. If you're off even slightly, you'll get penalized
@@ -360,26 +346,41 @@ public class GameTimeline extends Entity {
                             if (beatType == TimeBar.BT_HARD) {
                                 meter.Duck();
                                 isDucking = true;
+
+                                Sounder.Sound_Play("beat_dodge");
                             }
                             else {
                                 ScreenTremble(0.05f, 50);
+
+                                Sounder.Sound_Play("beat_basic_normal");
                             }
+
+
                             break;
                         case Meter.HITRESULT_SLOW:
                             if (beatType == TimeBar.BT_HARD) {
                                 meter.Duck();
                                 isDucking = true;
+
+                                Sounder.Sound_Play("beat_dodge");
                             }
                             else {
                                 ScreenTremble(0.05f, 50);
+
+                                Sounder.Sound_Play("beat_basic_normal");
                             }
+
                             break;
                         case Meter.HITRESULT_PERFECT:
                             if (beatType == TimeBar.BT_HARD) {
                                 ScreenTremble(0.25f, 150);
+
+                                Sounder.Sound_Play("beat_hard");
                             }
                             else {
                                 ScreenTremble(0.10f, 100);
+
+                                Sounder.Sound_Play("beat_basic_perfect");
                             }
 
                             break;
@@ -473,7 +474,6 @@ public class GameTimeline extends Entity {
 
         meter.updateMeter();
 
-
         if (isFinished) {
             return;
         }
@@ -481,7 +481,7 @@ public class GameTimeline extends Entity {
 
         float currentCursor = ConvertTimeToCursor(TimePassedSinceStarted());
         //
-        if (!isDucking) {
+        if (!isDucking || true) {
             if (Inputter.check(MotionEvent.ACTION_DOWN, null)) {
                 if (hitResult == Meter.HITRESULT_MISS) {
                     int tempResult = meter.PunchBag();
@@ -494,6 +494,10 @@ public class GameTimeline extends Entity {
             }
         }
 
+        // *** Prevent an extra miss from happening.
+        if (isFinished) {
+            return;
+        }
 
         float leewayMoment = beatMoment+(beatMoment-lastBeatMoment)*meter.leeway;
         if (currentCursor >= leewayMoment) {
@@ -529,11 +533,11 @@ public class GameTimeline extends Entity {
             float finishTime = SystemClock.uptimeMillis()-timeFinished;
 
 
-            p.setColor(Color.argb((int)(80*Helper.Longevity(finishTime, 0, 1000)), 0, 40, 160));
+            p.setColor(Color.argb((int)(160*Helper.Longevity(finishTime, 0, 1000)), 0, 40, 160));
             Artist.drawRect(0, 0, Artist.screenWidth/1.5f, Artist.screenHeight);
 
 
-            p.setColor(Color.argb((int)(255*Helper.Longevity(finishTime, 0, 1000)), 0, 0, 0));
+            p.setColor(Color.argb((int)(255*Helper.Longevity(finishTime, 0, 1000)), 200, 200, 200));
             p.setTextSize(60);
 
             String str = "Results: \n\n";
@@ -554,10 +558,23 @@ public class GameTimeline extends Entity {
                 str = "Too Fast: " + scoreTallier.hitCounter[Meter.HITRESULT_FAST] + "      Too Slow: " + scoreTallier.hitCounter[Meter.HITRESULT_SLOW]+" \n\n";
                 c.drawText(str, 100, 300+60*6, p);
             }
+            if (finishTime >= 5000) {
+                str = "Max Combo: " + scoreTallier.highestCombo;
+                c.drawText(str, 100, 300+60*7, p);
+            }
             if (finishTime >= 6000) {
                 str = "Rank: " + scoreTallier.CalculateRank();
                 p.setColor(Color.argb(255, 255, 0, 0));
-                c.drawText(str, 100, 300+60*8, p);
+                c.drawText(str, 100, 300+60*9, p);
+            }
+            if (finishTime >= 8000) {
+                p.setColor(Color.argb(255, 40, 200, 255));
+
+                str = "Lukas Says:";
+                c.drawText(str, 100, 300+60*11, p);
+
+                str = "\"" + scoreTallier.RankComment() + "\"";
+                c.drawText(str, 100, 300+60*12, p);
             }
 
 
@@ -568,210 +585,36 @@ public class GameTimeline extends Entity {
                 }
             }
         }
-    }
 
 
-    class GameSong {
-        private ArrayList<TimeBar> timeBars = new ArrayList<>();
+        if (isExiting) {
+            Artist.SetColor(Color.argb(255, 0, 0, 0));
+            Artist.drawRect(0, 0, (int)(Artist.screenWidth*Math.pow(Helper.Longevity(SystemClock.uptimeMillis(), exitTime, 1000), 2)), Artist.screenHeight);
 
-        public Music music;
-        MusicThread thread;
+            if (SystemClock.uptimeMillis()-exitTime >= 2000) {
+                Sounder.Music_Stop();
 
-        public GameSong(Music mu) {
-            music = mu;
 
-            Databaser db = Databaser.CreateInstance();
-            if (db.gameRaws_BeatMaps.containsKey(music.name)) {
-                CreateFromString(db.gameRaws_BeatMaps.get(music.name));
+                GameManager.CreateInstance().Begin_MainMenu();
             }
-        }
-
-
-        public void Prepare() {
-            thread = MusicThread.CreateInstance(GameManager.CreateInstance().activity, music);
-        }
-
-
-        public void Add(int b1, int b2, int b3, int b4) {
-            Add(new TimeBar(b1, TimeBar.BT_NONE, TimeBar.BT_NONE, TimeBar.BT_NONE,
-                    b2, TimeBar.BT_NONE, TimeBar.BT_NONE, TimeBar.BT_NONE,
-                    b3, TimeBar.BT_NONE, TimeBar.BT_NONE, TimeBar.BT_NONE,
-                    b4, TimeBar.BT_NONE, TimeBar.BT_NONE, TimeBar.BT_NONE));
-        }
-        public void Add(TimeBar tb) {
-            // if (tb.hasBeat == null) return;
-
-            timeBars.add(tb);
-        }
-
-        public void Clear() {
-            timeBars.clear();
-        }
-
-
-        public void CreateFromString(String str) {
-            Databaser db = Databaser.CreateInstance();
-
-            int index;
-            String sub;
-            while ((index = str.indexOf("\n")) >= 0) {
-                sub = str.substring(0, index);
-                //
-                TimeBar tb = new TimeBar();
-                if (sub.length() < 16) {
-                    for (int n = 0; n < BEATCOUNT/4; n++) {
-                        int i = n*4;
-
-                        char chr = sub.charAt(n);
-                        int type = db.charToBeat.get(chr);
-                        tb.hasBeat[i+0] = type;
-                        tb.hasBeat[i+1] = db.charToBeat.get('_');
-                        tb.hasBeat[i+2] = db.charToBeat.get('_');
-                        tb.hasBeat[i+3] = db.charToBeat.get('_');
-                    }
-                }
-                else {
-                    for (int n = 0; n < BEATCOUNT; n++) {
-                        tb.hasBeat[n] = db.charToBeat.get(sub.charAt(n));
-                    }
-                }
-                //
-                Add(tb);
-                //
-                str = str.substring(index+1);
-            }
-        }
-
-
-
-        public TimeBar GetBar(float index) {
-            int actualIndex = (int)Math.floor(index);
-
-            return timeBars.get(actualIndex);
-        }
-
-        public int GetBeat(float timeCursor) {
-            int actualIndex;
-            actualIndex = (int)Math.floor(timeCursor); // *** We only care about the WHOLE number
-            //
-            if (actualIndex < 0) return TimeBar.BT_NONE;
-            else if (actualIndex >= timeBars.size()) return TimeBar.BT_NONE;
-            //
-            TimeBar tb = timeBars.get(actualIndex);
-            //
-
-            timeCursor -= Math.floor(timeCursor);
-            timeCursor *= BEATCOUNT; // *** Increase it by the number of possible beats,
-            timeCursor = (float)Math.floor(timeCursor); // *** Round it *UP* (because we only care about the NEXT beat, not the current one)
-
-
-            return tb.hasBeat[(int)timeCursor];
-        }
-    }
-    class TimeBar {
-
-        public static final int BT_NONE = 0; // *** No beat; Not necessary to press anything
-        public static final int BT_BASE = 1; // *** Standard beat; Miss two beats if you don't get it
-        public static final int BT_HARD = 2; // *** Game is terminated if you miss this beat
-        public static final int BT_EASY = 3; // *** No penalty for missing this beat
-        public static final int BT__NUMBER = 4;
-
-
-
-        // *** The "last" beat represents the start of the next bar/measure (meaning the first is not the first beat of the current bar)
-        public int[] hasBeat = new int[BEATCOUNT];
-
-        public boolean HasBeat(int index) { return (hasBeat[index] != BT_NONE); }
-
-        public TimeBar() {}
-        public TimeBar(int b0, int b1, int b2, int b3) {
-            hasBeat[0] = b0;
-            hasBeat[1] = BT_NONE;
-            hasBeat[2] = BT_NONE;
-            hasBeat[3] = BT_NONE;
-            hasBeat[4] = b1;
-            hasBeat[5] = BT_NONE;
-            hasBeat[6] = BT_NONE;
-            hasBeat[7] = BT_NONE;
-            hasBeat[8] = b2;
-            hasBeat[9] = BT_NONE;
-            hasBeat[10] = BT_NONE;
-            hasBeat[11] = BT_NONE;
-            hasBeat[12] = b3;
-            hasBeat[13] = BT_NONE;
-            hasBeat[14] = BT_NONE;
-            hasBeat[15] = BT_NONE;
-        }
-        public TimeBar(int b0, int b1, int b2, int b3, int b4, int b5, int b6, int b7, int b8, int b9, int ba, int bb, int bc, int bd, int be, int bf) {
-            hasBeat[0] = b0;
-            hasBeat[1] = b1;
-            hasBeat[2] = b2;
-            hasBeat[3] = b3;
-            hasBeat[4] = b4;
-            hasBeat[5] = b5;
-            hasBeat[6] = b6;
-            hasBeat[7] = b7;
-            hasBeat[8] = b8;
-            hasBeat[9] = b9;
-            hasBeat[10] = ba;
-            hasBeat[11] = bb;
-            hasBeat[12] = bc;
-            hasBeat[13] = bd;
-            hasBeat[14] = be;
-            hasBeat[15] = bf;
         }
     }
 
-
-    public class ScoreTallier {
-        public int hitTotal = 0;
-        public int[] hitCounter = new int[Meter.HITRESULT__NUMBER];
-
-        public ScoreTallier() {
-        }
+    @Override
+    public void Discard() {
+        super.Discard();
 
 
+        GameManager gm = GameManager.CreateInstance();
 
-        public void Tally(int hitResult) {
-            hitCounter[hitResult]++;
-            hitTotal++;
-        }
+        _instance = null;
+        gm.gameplayTimeline = null;
 
-
-        public String CalculateRank() {
-            float maxScore = 100 * hitTotal;
+        currentSong.thread.interrupt();
 
 
-            float myScore = 0;
-            myScore += 70 *hitCounter[Meter.HITRESULT_FAST];
-            myScore += 40 *hitCounter[Meter.HITRESULT_SLOW];
-            myScore += 100 *hitCounter[Meter.HITRESULT_PERFECT];
-            myScore += 10 *hitCounter[Meter.HITRESULT_DODGE];
-            //
-            if (myScore >= maxScore * 0.95f) {
-                return "SSS";
-            }
-            else if (myScore >= maxScore * 0.90f) {
-                return "SS";
-            }
-            else if (myScore >= maxScore * 0.85f) {
-                return "S";
-            }
-            else if (myScore >= maxScore * 0.80f) {
-                return "A";
-            }
-            else if (myScore >= maxScore * 0.70f) {
-                return "B";
-            }
-            else if (myScore >= maxScore * 0.60f) {
-                return "C";
-            }
-            else if (myScore >= maxScore * 0.50f) {
-                return "D";
-            }
-            else {
-                return "F";
-            }
-        }
+        returnButton.Discard();
     }
 }
+
+

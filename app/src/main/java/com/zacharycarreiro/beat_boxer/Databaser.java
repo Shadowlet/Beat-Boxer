@@ -17,16 +17,17 @@ public class Databaser {
 
 
 
+    public String[] GamePlaylist = new String[3];
 
     public HashMap<Character, Integer> charToBeat = new HashMap<>();
     public HashMap<String, String> gameRaws_BeatMaps = new HashMap<>();
     private void Initialize() {
         // *** Beat Key
-        charToBeat.put('_', GameTimeline.TimeBar.BT_NONE);
-        charToBeat.put('B', GameTimeline.TimeBar.BT_BASE);
+        charToBeat.put('_', TimeBar.BT_NONE);
+        charToBeat.put('B', TimeBar.BT_BASE);
         // charToBeat.put('E', GameTimeline.TimeBar.BT_EASY);
-        charToBeat.put('E', GameTimeline.TimeBar.BT_NONE);
-        charToBeat.put('H', GameTimeline.TimeBar.BT_HARD);
+        charToBeat.put('E', TimeBar.BT_NONE);
+        charToBeat.put('H', TimeBar.BT_HARD);
 
 
         // *** This supports both 4 and 16 resolution bars
@@ -126,7 +127,47 @@ public class Databaser {
                 "E_____E_________\n" +
                 "E_E___E___E_____\n");
 
+
+        // *** "Emphasis"
+        gameRaws_BeatMaps.put("specialaffects", "____\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n" +
+                "BEBE\n");
+
         // blah = blah.replaceAll("\\s","");
+
+
+        GamePlaylist[0] = "emphasis";
+        GamePlaylist[1] = "c_hc";
+        GamePlaylist[2] = "specialaffects";
     }
 
 

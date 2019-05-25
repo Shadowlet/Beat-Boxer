@@ -40,17 +40,27 @@ public class Resourcer {
         toLoadBitmaps.put("button_exit", R.drawable.button_exit);
         toLoadBitmaps.put("button_play", R.drawable.button_play);
 
-        toLoadBitmaps.put("title_backdrop", R.drawable.title_page_scale); // title_page
+        toLoadBitmaps.put("title_backdrop", R.drawable.title_page); // title_page
 
         toLoadBitmaps.put("scene_treadmill", R.drawable.scene_threadmill);
         toLoadBitmaps.put("scene_weightlift", R.drawable.scene_weightlift);
         toLoadBitmaps.put("scene_weightrack", R.drawable.scene_weightrack);
+        toLoadBitmaps.put("title_text", R.drawable.title_text);
+        toLoadBitmaps.put("game_controls", R.drawable.controls);
+
+        toLoadBitmaps.put("hit_fast", R.drawable.hit_fast);
+        toLoadBitmaps.put("hit_miss", R.drawable.hit_miss);
+        toLoadBitmaps.put("hit_perfect", R.drawable.hit_perfect);
+        toLoadBitmaps.put("hit_slow", R.drawable.hit_slow);
+
+
+        toLoadBitmaps.put("songbox", R.drawable.songbox);
 
         
         toLoadMusics.put("test", R.raw.test);
         toLoadMusics.put("emphasis", R.raw.emphasis);
         toLoadMusics.put("c_hc", R.raw.c_hc);
-
+        toLoadMusics.put("specialaffects", R.raw.specialaffects);
     }
 
     public static Resources resources;
@@ -185,8 +195,6 @@ public class Resourcer {
         Q.offsetY = Q.GetHeight()-32;
         Q = allBitmaps.get("lukas_fly");
         Q.Centralize();
-        Q.offsetX = 0;
-        Q.offsetY = Q.GetHeight()-32;
         Q = allBitmaps.get("lukas_victory");
         Q.Centralize();
         Q.offsetX = 0;
@@ -198,6 +206,23 @@ public class Resourcer {
         Q = allBitmaps.get("scene_weightlift");
         Q.Centralize();
         Q = allBitmaps.get("scene_weightrack");
+        Q.Centralize();
+        Q = allBitmaps.get("title_text");
+        Q.Cornerize();
+        Q = allBitmaps.get("game_controls");
+        Q.Centralize();
+
+
+        Q = allBitmaps.get("hit_fast");
+        Q.Centralize();
+        Q = allBitmaps.get("hit_miss");
+        Q.Centralize();
+        Q = allBitmaps.get("hit_perfect");
+        Q.Centralize();
+        Q = allBitmaps.get("hit_slow");
+        Q.Centralize();
+
+        Q = allBitmaps.get("songbox");
         Q.Centralize();
 
 
@@ -225,6 +250,15 @@ public class Resourcer {
         P.preDelay = 250;
         P.walkmanned = R.raw.c_hc_walkman;
         P.title = "C_HC (clap)";
+
+        P = allMusics.get("specialaffects");
+        P.bitRate = 1411;
+        P.barCount = 32;
+        P._tempo = 128;
+        P.beatDensity = 4;
+        P.preDelay = 250;
+        P.walkmanned = R.raw.specialaffects_walkman;
+        P.title = "Special Affects";
     }
 }
 

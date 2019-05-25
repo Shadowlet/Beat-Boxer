@@ -31,7 +31,7 @@ public class GameManager {
     GameTimeline gameplayTimeline;
 
     public void Initialize() {
-        mainMenu = new Menu_Title();
+        Begin_MainMenu();
     }
 
     public void Update() {
@@ -49,9 +49,11 @@ public class GameManager {
         for (Object o : list) {
             Actor a = (Actor)o;
 
-            a.Process();
-            //
-            a.Update();
+            if (!a._isDiscarded) {
+                a.Process();
+                //
+                a.Update();
+            }
         }
         //
         //
@@ -68,7 +70,9 @@ public class GameManager {
         for (Object o : list) {
             Actor a = (Actor)o;
 
-            a.Draw(c, p);
+            if (!a._isDiscarded) {
+                a.Draw(c, p);
+            }
         }
 
 
@@ -82,10 +86,22 @@ public class GameManager {
         activity = a;
     }
 
-    public void Begin_PunchMode() {
-        mainMenu.Despawn();
+    public void Begin_PunchMode(int songIndex) {
+        if (mainMenu != null) {
+            mainMenu.Despawn();
+            mainMenu = null;
+        }
         //
-        punchMode = new Holder_PunchMode();
+        punchMode = new Holder_PunchMode(songIndex);
+    }
+
+    public void Begin_MainMenu() {
+        if (punchMode != null) {
+            punchMode.Discard();
+            punchMode = null;
+        }
+        //
+        mainMenu = new Menu_Title();
     }
 
     public void CollectGarbage() {

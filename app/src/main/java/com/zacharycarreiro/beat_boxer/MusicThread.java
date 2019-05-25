@@ -99,16 +99,7 @@ class MusicThread extends Thread {
 
                 if (isDone) {
                     Log.e("THREAD", "END");
-
-                    at.stop();
-                    Log.e("THREAD", "3333333333");
-                    at.release();
-                    Log.e("THREAD", "44444444444");
-                    //
-                    //
                     s_instance.interrupt();
-                    //
-                    s_instance = null;
                 }
                 else {
                     isDone = true;
@@ -141,7 +132,12 @@ class MusicThread extends Thread {
             if (isInterrupted()) break;
         }
         //
-        Log.e("THREAD", "555555555555555");
+        at.stop();
+        Log.e("THREAD", "3333333333");
+        at.release();
+        Log.e("THREAD", "44444444444");
+        //
+        s_instance = null;
         //
         return;
     }

@@ -25,6 +25,18 @@ public class PunchingBag extends DisplayableActor {
         y = Artist.screenHeight/6 +64;
     }
 
+    @Override
+    public void Discard() {
+        super.Discard();
+
+
+        myMeter.Discard();
+        myMeter = null;
+
+        myGuy.Discard();
+        myGuy = null;
+    }
+
 
     @Override
     public void Update() {
@@ -48,10 +60,10 @@ public class PunchingBag extends DisplayableActor {
 
         GameTimeline gtl = GameTimeline.CreateInstance();
 
-        if (gtl.beatType == GameTimeline.TimeBar.BT_EASY) {
+        if (gtl.beatType == TimeBar.BT_EASY) {
             image_rotate = -myMeter.visualValue * 10;
         }
-        else if (gtl.beatType == GameTimeline.TimeBar.BT_HARD) {
+        else if (gtl.beatType == TimeBar.BT_HARD) {
             image_rotate = -myMeter.visualValue * 90;
         }
         else {
@@ -64,9 +76,9 @@ public class PunchingBag extends DisplayableActor {
             myGuy.SetAnim("fly");
             myGuy.frame_speed = 12/Helper.SECOND;
 
-            myGuy.x -= 100/Helper.SECOND;
-            myGuy.y -= 30/Helper.SECOND;
-            myGuy.image_rotate += 120/Helper.SECOND;
+            myGuy.x -= 1500/Helper.SECOND;
+            myGuy.y -= 730/Helper.SECOND;
+            myGuy.image_rotate += 2320/Helper.SECOND;
         }
         else if (gtl.isFinished) {
             myGuy.loopingMode = LOOPMODE_STOP;
