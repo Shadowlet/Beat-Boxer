@@ -105,7 +105,7 @@ public class GameTimeline extends Entity {
 
     public Runnable ThreadCallback = new Runnable() {
         public void run() {
-            timeStarted = SystemClock.uptimeMillis() +currentSong.music.preDelay;
+            timeStarted = SystemClock.uptimeMillis() +50; // +currentSong.music.preDelay;
             Log.e("TIMING", "Callback received at: "+SystemClock.uptimeMillis());
             //
             timeOfCurrentBeat = 0;

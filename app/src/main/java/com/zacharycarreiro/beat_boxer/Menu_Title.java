@@ -35,7 +35,7 @@ public class Menu_Title extends Actor {
 
 
         int xx, yy;
-        xx = 1484 -120;
+        xx = (int)(Artist.screenWidth*((1484 -120)/1800f));
 
         yy = (int)(Artist.screenHeight*(391/1080f));
         playButton = new ButtonArea("button_play", new Rect(xx, yy, xx+312, yy+117), new Runnable() {
@@ -134,7 +134,7 @@ public class Menu_Title extends Actor {
         p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
         */
         c.drawColor(Color.DKGRAY);
-        Artist.drawBitmap("title_backdrop", 0, x, y, 1, 1, 0, true);
+        Artist.drawBitmap("title_backdrop", 0, x, y, Artist.screenWidth/(float)1920, Artist.screenHeight/(float)1080, 0, true);
 
 
         if (showingControls) {
@@ -143,6 +143,22 @@ public class Menu_Title extends Actor {
         else {
             if (selection < 0) {
                 Artist.drawBitmap("title_text", 0, Artist.screenWidth * (1 / 10f), Artist.screenHeight * ((float) ((1 + 0.3f * Math.sin(Math.PI * (pickedTime / 1000f))) / 10f)), 1, 1, 0, true);
+
+                float xx, yy;
+                xx = Artist.screenWidth *(0.3f/10f);
+                yy = Artist.screenHeight *(9.8f / 10f);
+
+
+
+
+                p.setColor(Color.argb(160, 0, 0, 0));
+                Artist.drawRect(0, yy-60*3-10, 0+600, Artist.screenHeight);
+                //
+                p.setColor(Color.argb(255, 80, 240, 240));
+                p.setTextSize(60);
+                c.drawText("Co-Developed by:", xx, yy-60*2, p);
+                c.drawText("Khori Armstrong", xx, yy-60*1, p);
+                c.drawText("Zachary Carreiro", xx, yy-60*0, p);
             } else {
                 float jist1 = Helper.Longevity(pickedTime, 0, 1000 / 3);
                 p.setColor(Color.argb((int) (255 * (1 - jist1)), 255, 255, 255));

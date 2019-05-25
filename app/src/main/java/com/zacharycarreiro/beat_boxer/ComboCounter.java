@@ -73,7 +73,7 @@ public class ComboCounter extends Actor {
 
                 p.setTextAlign(Paint.Align.CENTER);
                 p.setTextSize(90);
-                Artist.drawBitmap(img, 0, xx, yy - 100 * (float) (Math.pow(Math.min(tallyTiming / 300f, 1), 2)), 1/2f, 1/2f, 0);
+                Artist.drawBitmap(img, 0, xx, yy - 84 * (float) (Math.pow(Math.min(tallyTiming / 300f, 1), 2)), 1/2f, 1/2f, 0);
                 // c.drawText(str, xx, yy - 100 * (float) (Math.pow(Math.min(tallyTiming / 300f, 1), 2)), p);
                 //
                 p.setTextAlign(Paint.Align.LEFT);

@@ -81,8 +81,6 @@ public class Holder_PunchMode extends Entity {
         Artist.drawRect(0, Artist.screenHeight - Artist.screenHeight/3, Artist.screenWidth, Artist.screenHeight);
 
 
-
-        /*
         int xx, yy;
         yy = (int)(Artist.screenHeight*(5/8f));
         Artist.drawBitmap("scene_treadmill", 0, Artist.screenWidth *(1/10f), yy, 2f, 2f, 0);
@@ -95,7 +93,6 @@ public class Holder_PunchMode extends Entity {
         Artist.drawBitmap("scene_weightlift", 0, Artist.screenWidth *(5/10f), yy, 2f, 2f, 0);
         Artist.drawBitmap("scene_weightlift", 0, Artist.screenWidth *(6.2f/10f), yy, 2f, 2f, 0);
         Artist.drawBitmap("scene_weightlift", 0, Artist.screenWidth *(7.4f/10f), yy, 2f, 2f, 0);
-        */
 
 
         p.setColor(Color.argb(255,0,0,0));
